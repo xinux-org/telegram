@@ -1,9 +1,6 @@
 use std::error::Error;
 use teloxide::{prelude::*, update_listeners::webhooks};
-use xinuxmgr::{
-    handler,
-    utils::cargo_like_log,
-};
+use xinuxmgr::{handler, utils::cargo_like_log};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -11,7 +8,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     log::info!("Starting Bot: {}", "xinuxmgr");
 
     let bot = Bot::from_env();
-    
+
     // Dispatcher flow control
     let mut dispatcher = Dispatcher::builder(bot.clone(), handler())
         // .dependencies(dptree::deps![])

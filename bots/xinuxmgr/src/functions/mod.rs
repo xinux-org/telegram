@@ -1,11 +1,11 @@
 pub mod about;
 pub mod check;
+pub mod feedback;
 pub mod help;
 pub mod joined;
-pub mod warn;
 pub mod rules;
 pub mod start;
-pub mod feedback;
+pub mod warn;
 
 use crate::Command;
 use std::error::Error;
@@ -30,10 +30,7 @@ pub async fn commands(
     Ok(())
 }
 
-pub async fn callback(
-    _bot: Bot,
-    q: CallbackQuery,
-) -> Result<(), Box<dyn Error + Send + Sync>> {
+pub async fn callback(_bot: Bot, q: CallbackQuery) -> Result<(), Box<dyn Error + Send + Sync>> {
     let mut _args: Vec<&str> = Vec::new();
 
     if let Some(data) = q.data.clone() {
