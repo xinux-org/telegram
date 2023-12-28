@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  xinuxmgr:
+    restart: always
+    build: ../bots/xinuxmgr
+    ports:
+      - 8445:8445
+    env_file: ../bots/xinuxmgr/.env
