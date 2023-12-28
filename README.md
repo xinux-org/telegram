@@ -3,8 +3,8 @@
 <h2 align="center">Xinux Telegram Botlari (RIIR)</h2>
 
 <p align="center">
-  <a href="https://t.me/xeonittebot">
-    <img src="https://img.shields.io/static/v1.svg?style=flat-square&label=heroku&message=deployed&logoColor=eceff4&logo=github&colorA=000000&colorB=ffffff"/>
+  <a href="https://github.com/xinux-org/telegram/actions/workflows/test.yml">
+    <img src="https://github.com/xinux-org/telegram/actions/workflows/test.yml/badge.svg"/>
   </a>
 </p>
 
