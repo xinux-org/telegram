@@ -1,4 +1,4 @@
-<p align="center"><a href="https://t.me/xeonittebot" target="_blank"><img height="300" width="300" src="./.github/assets/logo.jpg"/></a></p>
+<p align="center"><a href="https://t.me/xinuxuz" target="_blank"><img height="300" width="300" src="./.github/assets/logo.png"/></a></p>
 
 <h2 align="center">Xinux Telegram Botlari (RIIR)</h2>
 
