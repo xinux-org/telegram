@@ -1,20 +1,12 @@
 pub mod about;
 pub mod check;
-pub mod groups;
 pub mod help;
-pub mod inline;
 pub mod joined;
-pub mod latest;
-pub mod offtop;
-pub mod roadmap;
+pub mod warn;
 pub mod rules;
 pub mod start;
-pub mod useful;
-pub mod version;
+pub mod feedback;
 
-pub use inline::inline;
-
-use crate::utils::{github::GitHub, groups::Groups, resources::Resources};
 use crate::Command;
 use std::error::Error;
 use teloxide::{prelude::*, types::*};
@@ -24,61 +16,37 @@ pub async fn commands(
     me: Me,
     msg: Message,
     cmd: Command,
-    github: GitHub,
-    groups: Groups,
-    resources: Resources,
 ) -> Result<(), Box<dyn Error + Send + Sync>> {
     let _ = match cmd {
         Command::Start => crate::functions::start::command(&bot, &msg).await,
         Command::Help => crate::functions::help::command(&bot, &msg, &cmd).await,
         Command::Rules => crate::functions::rules::command(&bot, &msg).await,
         Command::About => crate::functions::about::command(&bot, &msg).await,
-        Command::Group => crate::functions::groups::command(&bot, &msg, &groups).await,
-        Command::Latest => crate::functions::latest::command(&bot, github, &msg).await,
-        Command::Version => crate::functions::version::command(&bot, github, &msg).await,
-        Command::Off => crate::functions::offtop::command(&bot, &msg, &me).await,
-        Command::Useful => crate::functions::useful::command(&bot, &msg, &resources).await,
-        Command::Roadmap => crate::functions::roadmap::command(&bot, &msg).await,
+        Command::Warn => crate::functions::warn::command(&bot, &msg, &me).await,
         Command::Check => crate::functions::check::command(&bot, &msg).await,
-        Command::Feedback => crate::functions::check::command(&bot, &msg).await,
+        Command::Feedback => crate::functions::feedback::command(&bot, &msg).await,
     };
 
     Ok(())
 }
 
 pub async fn callback(
-    bot: Bot,
+    _bot: Bot,
     q: CallbackQuery,
-    github: GitHub,
-    groups: Groups,
-    resources: Resources,
 ) -> Result<(), Box<dyn Error + Send + Sync>> {
-    let mut args: Vec<&str> = Vec::new();
+    let mut _args: Vec<&str> = Vec::new();
 
     if let Some(data) = q.data.clone() {
         if data.contains('_') {
-            args = data.split('_').collect();
+            _args = data.split('_').collect();
         } else {
-            args.push(&data);
+            _args.push(&data);
         }
 
-        let _ = match args.remove(0) {
-            "group" => crate::functions::groups::callback_list(&bot, &q, &args, &groups).await,
-            "detail" => crate::functions::groups::callback_detail(&bot, &q, &args).await,
-            "version" => crate::functions::version::callback_list(&bot, &q, &args, github).await,
-            "changelog" => {
-                crate::functions::version::callback_detail(&bot, &q, &args, github).await
-            }
-            "useful" => crate::functions::useful::callback_list(&bot, &q, &resources).await,
-            "category" => {
-                crate::functions::useful::callback_category_list(&bot, &q, &args, &resources).await
-            }
-            "material" => {
-                crate::functions::useful::callback_material_detail(&bot, &q, &args, &resources)
-                    .await
-            }
-            _ => Ok(()),
-        };
+        // let _ = match args.remove(0) {
+        //     "group" => crate::functions::groups::callback_list(&bot, &q, &args, &groups).await,
+        //     _ => Ok(()),
+        // };
     }
 
     Ok(())
@@ -86,7 +54,7 @@ pub async fn callback(
 
 pub async fn triggers(bot: Bot, msg: Message) -> Result<(), Box<dyn Error + Send + Sync>> {
     if let Some(thread) = msg.thread_id {
-        if msg.chat.id.0 == -1001174263940 && (thread == 178654 || thread == 178654) {
+        if msg.chat.id.0 == -1001174263940 && thread == 178654 {
             match bot.delete_message(msg.chat.id, msg.id).await {
                 Ok(_) => {}
                 Err(_) => {}

@@ -1,4 +1,4 @@
-use crate::utils::{keyboard::Keyboard, message::Rustina};
+use crate::utils::{keyboard::Keyboard, message::Assistant};
 use teloxide::{prelude::*, types::*};
 
 static TEXT_FAIL: &str = "Ha-ha... yaxshi urinish!";

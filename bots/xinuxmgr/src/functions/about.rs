@@ -1,6 +1,6 @@
 use crate::{
     hooks,
-    utils::{keyboard::Keyboard, message::Rustina},
+    utils::{keyboard::Keyboard, message::Assistant},
 };
 use teloxide::{
     payloads::SendMessageSetters,

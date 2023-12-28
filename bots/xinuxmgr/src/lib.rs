@@ -26,34 +26,18 @@ pub enum Command {
     /// About the bot
     About,
 
-    /// Available groups
-    Group,
-
-    /// Latest version
-    Latest,
-
-    /// Specific version
-    Version,
-
     /// Report offtopic
-    Off,
-
-    /// Useful resources
-    Useful,
-
-    /// Roadmap for newbies,
-    Roadmap,
+    Warn,
 
     /// Check for chatid
     Check,
 
+    /// Leave a feedback for the bot
     Feedback,
 }
 
 pub fn handler() -> UpdateHandler<Box<dyn std::error::Error + Send + Sync + 'static>> {
     dptree::entry()
-        // Inline Queries
-        .branch(Update::filter_inline_query().endpoint(functions::inline))
         // Callbacks
         .branch(Update::filter_callback_query().endpoint(functions::callback))
         // Commands

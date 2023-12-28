@@ -1,6 +1,13 @@
 [workspace]
+resolver = "2"
 members = [
     "bots/xinuxmgr",
     "bots/xeonix",
     "bots/xeonitte"
 ]
+
+[profile.release]
+strip = true
+opt-level = "z"
+lto = true
+codegen-units = 1

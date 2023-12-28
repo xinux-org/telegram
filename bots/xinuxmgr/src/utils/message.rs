@@ -5,7 +5,7 @@ use teloxide::{
     {payloads, payloads::*},
 };
 
-pub trait Rustina {
+pub trait Assistant {
     type Err: std::error::Error + Send;
     type SendMessageTF: Request<Payload = SendMessage, Err = Self::Err>;
 
@@ -16,7 +16,7 @@ pub trait Rustina {
         T: Into<String>;
 }
 
-impl Rustina for Bot {
+impl Assistant for Bot {
     type Err = teloxide::errors::RequestError;
     type SendMessageTF = JsonRequest<payloads::SendMessage>;
 

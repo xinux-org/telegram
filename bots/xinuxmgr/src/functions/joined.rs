@@ -1,6 +1,6 @@
 use teloxide::{prelude::*, types::*};
 
-use crate::utils::message::{delete_timer, Rustina};
+use crate::utils::message::{delete_timer, Assistant};
 
 static TEXT: &str = "<b>Salom Administrator!</b>\n\n\
 Sizlarni bu guruhda ko'rib turganimizdan mamnunmiz. Bu guruh Rust dasturlash tiliga qaratilgan hisoblanib, \

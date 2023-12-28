@@ -6,7 +6,7 @@ use teloxide::{
 
 use crate::utils::{
     keyboard::Keyboard,
-    message::{delete_timer, Rustina},
+    message::{delete_timer, Assistant},
 };
 
 static TEXT: &str = "⚠️ <b>Bu komanda faqat shaxsiy chat uchun!</b>";

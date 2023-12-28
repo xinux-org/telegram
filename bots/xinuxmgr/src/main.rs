@@ -1,30 +1,20 @@
-use crates_io_api::AsyncClient;
 use std::error::Error;
 use teloxide::{prelude::*, update_listeners::webhooks};
-use xeonitte::{
+use xinuxmgr::{
     handler,
-    utils::{cargo_like_log, github::GitHub, groups::Groups, resources::Resources},
+    utils::cargo_like_log,
 };
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     pretty_env_logger::init();
-    log::info!("Starting Rustina Assistant...");
+    log::info!("Starting Bot: {}", "xinuxmgr");
 
     let bot = Bot::from_env();
-
-    let groups = Groups::new();
-    let github = GitHub::new();
-    let crates_client = AsyncClient::new(
-        "Rustina Assistant (rust@maid.uz)",
-        std::time::Duration::from_millis(100),
-    )
-    .unwrap();
-    let resources = Resources::new();
-
+    
     // Dispatcher flow control
     let mut dispatcher = Dispatcher::builder(bot.clone(), handler())
-        .dependencies(dptree::deps![crates_client, github, groups, resources])
+        // .dependencies(dptree::deps![])
         // If no handler succeeded to handle an update, this closure will be called
         .default_handler(|upd| async move {
             log::warn!("Unhandled update: {:?}", upd);

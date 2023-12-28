@@ -1,5 +1,5 @@
 use super::start::keyboard;
-use crate::{utils::message::Rustina, Command};
+use crate::{utils::message::Assistant, Command};
 use teloxide::{payloads::SendMessageSetters, prelude::*, types::ParseMode};
 
 static TEXT: &[(&str, &str)] = &[
