@@ -19,7 +19,8 @@ qilmaydi.**
 
 ## Dokumentatsiyalar
 
-- **teloxide** - [Github](https://github.com/teloxide/teloxide)
+- **Teloxide** - [Github](https://github.com/teloxide/teloxide)
+- **Rust** - [Docs](https://doc.rust-lang.uz/book/)
 - **Telegram Bot API** - [Web sahifa](https://core.telegram.org/bots/api)
 
 ## Kontributorlar (rivojlantirish jarayonida qatnashgan dasturchilar)
