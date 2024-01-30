@@ -34,5 +34,5 @@ pub async fn command(bot: &Bot, msg: &Message) -> ResponseResult<()> {
 
 pub fn keyboard() -> InlineKeyboardMarkup {
     let mut keyboard = Keyboard::new();
-    keyboard.url("Guruhga qaytish", "https://t.me/rustlanguz")
+    keyboard.url("Guruhga qaytish", "https://t.me/xinuxuz")
 }

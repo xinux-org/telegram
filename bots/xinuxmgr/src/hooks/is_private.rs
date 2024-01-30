@@ -13,7 +13,7 @@ static TEXT: &str = "⚠️ <b>Bu komanda faqat shaxsiy chat uchun!</b>";
 
 pub fn keyboard() -> InlineKeyboardMarkup {
     let mut keyboard: Keyboard = Keyboard::new();
-    keyboard.url("Shaxsiy Chat", "https://t.me/rustinabot")
+    keyboard.url("Shaxsiy Chat", "https://t.me/xinuxmgrbot")
 }
 
 pub async fn is_private(bot: &Bot, msg: &Message) -> ResponseResult<bool> {

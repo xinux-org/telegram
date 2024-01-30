@@ -5,14 +5,11 @@ use teloxide::{payloads::SendMessageSetters, prelude::*, types::ParseMode};
 static TEXT: &[(&str, &str)] = &[
     ("help", "ushbu xabarni qayta ko'rsatish"),
     ("rules", "qoidalarni aks ettirish"),
+    ("check", "chaqirilgan joydan parametrlarni ko'rish"),
     ("about", "ushbu botimizning rivojlantirish qismi"),
-    ("group", "rust ga oid guruh va hamjamiyatlar"),
-    ("roadmap", "boshlang'ich o'rganuvchilar uchun"),
-    ("useful", "rust haqida foydali yoki kerakli ma'lumotlar"),
-    ("latest", "eng oxirgi reliz haqida qisqacha ma'lumot"),
-    ("version", "biron anniq reliz haqida to'liq ma'lumot"),
+    ("feedback", "ushbu bot haqida fikr va taklif qoldirish"),
     (
-        "off",
+        "warn",
         "reply qilingan odamga offtop borligi haqida eslatish",
     ),
 ];
