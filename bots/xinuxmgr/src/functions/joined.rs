@@ -3,10 +3,10 @@ use teloxide::{prelude::*, types::*};
 use crate::utils::message::{delete_timer, Assistant};
 
 static TEXT: &str = "<b>Salom Administrator!</b>\n\n\
-Sizlarni bu guruhda ko'rib turganimizdan mamnunmiz. Bu guruh Rust dasturlash tiliga qaratilgan hisoblanib, \
-bu yerda ushbu til haqida gaplashish, savollar berish yoki o'z fikrlaringiz bilan bo'lishishingiz mumkin. \
-Hamda, agar siz ushbu dasturlash tilida butunlay yangi bo'lsangiz, /roadmap yordamida kerakli boshlang'ich \
-maslahatlar, va hamda /useful yordamoda foydali resurslar olishingiz mumkin.
+Sizni ko'rib turganimdan bag'oyatda xursandman.
+Men Xinux Jamiyati tomonidan yaratilgan bot hisoblanib,
+Xinux Jamiyati foydalanuvchilari uchun foydali resurslarni yetkazish, saqlash va
+ularni saralash uchun xizmat qilaman.
 ";
 
 pub async fn trigger(bot: &Bot, msg: &Message) -> ResponseResult<()> {

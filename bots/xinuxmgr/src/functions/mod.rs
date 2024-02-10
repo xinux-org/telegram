@@ -1,6 +1,5 @@
 pub mod about;
 pub mod check;
-pub mod feedback;
 pub mod help;
 pub mod joined;
 pub mod rules;
@@ -24,7 +23,6 @@ pub async fn commands(
         Command::About => crate::functions::about::command(&bot, &msg).await,
         Command::Warn => crate::functions::warn::command(&bot, &msg, &me).await,
         Command::Check => crate::functions::check::command(&bot, &msg).await,
-        Command::Feedback => crate::functions::feedback::command(&bot, &msg).await,
     };
 
     Ok(())

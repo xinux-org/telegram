@@ -23,5 +23,5 @@ pub async fn command(bot: &Bot, msg: &Message) -> ResponseResult<()> {
 pub fn keyboard() -> InlineKeyboardMarkup {
     let mut keyboard = Keyboard::new();
     keyboard.url("Jamiyat", "https://t.me/xinuxuz");
-    keyboard.url("Web Sahifa", "https://www.xinux.uz")
+    keyboard.url("Web Sahifa", "https://xinux.uz")
 }

@@ -2,7 +2,7 @@
 resolver = "2"
 members = [
     "bots/xinuxmgr",
-    "bots/xeonix",
+    "bots/xinitra",
     "bots/xeonitte"
 ]
 

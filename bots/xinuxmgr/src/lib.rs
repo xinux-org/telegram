@@ -31,9 +31,6 @@ pub enum Command {
 
     /// Check for chatid
     Check,
-
-    /// Leave a feedback for the bot
-    Feedback,
 }
 
 pub fn handler() -> UpdateHandler<Box<dyn std::error::Error + Send + Sync + 'static>> {
