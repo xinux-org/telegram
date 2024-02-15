@@ -1,20 +1,58 @@
-{
-  "asosiy": null,
-  "xinux": 178640,
-  "coding": 180629,
-  "yordam": 178646,
-  "devops": 179980,
-  "offtopic": 178666,
-  "redhat": 180526,
-  "windows": 180916,
-  "neofetch": 178654,
-  "unix": 180689,
-  "debian": 180507,
-  "i10n": 182187,
-  "macos": 180536,
-  "gaming":195168,
-  "meme": 207822,
-  "learning": 207118,
-  "fikrlar": 258076,
-  "moderator": 255895
-}
+[
+  {
+    "name": "asosiy",
+    "id": null
+  },
+  {
+    "name": "yordam",
+    "id": 178646
+  },
+  {
+    "name": "neofetch",
+    "id": 178654
+  },
+  {
+    "name": "offtopic",
+    "id": 178666
+  },
+  {
+    "name": "xinux",
+    "id": 178640
+  },
+  {
+    "name": "coding",
+    "id": 180629
+  },
+  {
+    "name": "devops",
+    "id": 179980
+  },
+  {
+    "name": "windows",
+    "id": 180916
+  },
+  {
+    "name": "i10n",
+    "id": 182187
+  },
+  {
+    "name": "gaming",
+    "id": 195168
+  },
+  {
+    "name": "meme",
+    "id": 207822
+  },
+  {
+    "name": "learning",
+    "id": 207118
+  },
+  {
+    "name": "fikrlar",
+    "id": 258076
+  },
+  {
+    "name": "moderator",
+    "id": 255895
+  }
+]

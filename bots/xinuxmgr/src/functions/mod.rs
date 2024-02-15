@@ -9,39 +9,45 @@ pub mod warn;
 use crate::Command;
 use std::error::Error;
 use teloxide::{prelude::*, types::*};
+use crate::utils::topics::Topics;
 
 pub async fn commands(
     bot: Bot,
     me: Me,
     msg: Message,
     cmd: Command,
-) -> Result<(), Box<dyn Error + Send + Sync>> {
+    topics: Topics,
+) -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
     let _ = match cmd {
         Command::Start => crate::functions::start::command(&bot, &msg).await,
         Command::Help => crate::functions::help::command(&bot, &msg, &cmd).await,
         Command::Rules => crate::functions::rules::command(&bot, &msg).await,
         Command::About => crate::functions::about::command(&bot, &msg).await,
-        Command::Warn => crate::functions::warn::command(&bot, &msg, &me).await,
+        Command::Warn => crate::functions::warn::command(&bot, &msg, &me, &topics).await,
         Command::Check => crate::functions::check::command(&bot, &msg).await,
     };
 
     Ok(())
 }
 
-pub async fn callback(_bot: Bot, q: CallbackQuery) -> Result<(), Box<dyn Error + Send + Sync>> {
-    let mut _args: Vec<&str> = Vec::new();
+pub async fn callback(
+    bot: Bot,
+    q: CallbackQuery,
+    topics: Topics,
+) -> Result<(), Box<dyn Error + Send + Sync>> {
+    let mut args: Vec<&str> = Vec::new();
 
     if let Some(data) = q.data.clone() {
         if data.contains('_') {
-            _args = data.split('_').collect();
+            args = data.split('_').collect();
         } else {
-            _args.push(&data);
+            args.push(&data);
         }
 
-        // let _ = match args.remove(0) {
-        //     "group" => crate::functions::groups::callback_list(&bot, &q, &args, &groups).await,
-        //     _ => Ok(()),
-        // };
+        let _ = match args.remove(0) {
+            "warn" => warn::callback(&bot, &q, &args, &topics).await,
+            _ => Ok(()),
+        };
     }
 
     Ok(())

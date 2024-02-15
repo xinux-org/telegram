@@ -1,5 +1,6 @@
 pub mod keyboard;
 pub mod message;
+pub mod topics;
 
 pub fn cargo_like_log(title: &str, message: &str) {
     println!(
