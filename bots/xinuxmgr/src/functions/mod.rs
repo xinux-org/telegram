@@ -6,10 +6,10 @@ pub mod rules;
 pub mod start;
 pub mod warn;
 
+use crate::utils::topics::Topics;
 use crate::Command;
 use std::error::Error;
 use teloxide::{prelude::*, types::*};
-use crate::utils::topics::Topics;
 
 pub async fn commands(
     bot: Bot,

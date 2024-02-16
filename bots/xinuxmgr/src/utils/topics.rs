@@ -1,4 +1,3 @@
-
 use std::collections::HashMap;
 
 const CONTENT: &str = include_str!("../../data/topics.json");
@@ -6,14 +5,14 @@ const CONTENT: &str = include_str!("../../data/topics.json");
 #[derive(serde::Deserialize)]
 pub struct Content {
     name: String,
-    id: Option<u32>
+    id: Option<u32>,
 }
 
 type Contents = Vec<Content>;
 
 #[derive(Clone, Debug)]
 pub struct Topics {
-    topics: HashMap<String, u32>
+    topics: HashMap<String, u32>,
 }
 
 impl Default for Topics {
@@ -30,13 +29,11 @@ impl Topics {
         for item in content {
             match item.id {
                 Some(id) => result.insert(item.name, id),
-                None => result.insert(item.name, 1)
+                None => result.insert(item.name, 1),
             };
         }
 
-        Topics {
-            topics: result
-        }
+        Topics { topics: result }
     }
 
     pub fn add(&mut self, topic: String, id: u32) {
@@ -51,4 +48,3 @@ impl Topics {
         self.topics.keys().cloned().collect()
     }
 }
-

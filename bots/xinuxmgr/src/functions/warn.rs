@@ -1,7 +1,8 @@
-use crate::utils::{keyboard::Keyboard, message::Assistant};
-use teloxide::{prelude::*, types::*};
-use teloxide::payloads::AnswerCallbackQuery;
 use crate::utils::topics::Topics;
+use crate::utils::transformation::Capitalize;
+use crate::utils::{keyboard::Keyboard, message::Assistant};
+use std::fmt::Display;
+use teloxide::{prelude::*, types::*};
 
 static TEXT_FAIL: &str = "Ha-ha... yaxshi urinish!";
 static TEXT_NON_REPLY: &str = "↪ Reply bilan ko'rsatingchi habarni!";
@@ -52,10 +53,37 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
     bot.delete_message(msg.chat.id, msg.reply_to_message().unwrap().id)
         .await?;
 
-    bot.send_message_tf(msg.chat.id, "Qaysi mavzu taraflama yozgan odam chetlashdi?", msg) // view_detail(msg.reply_to_message().unwrap())
-        .parse_mode(ParseMode::Html)
-        .reply_markup(keyboard(topics.list(), msg.from().unwrap().id))
-        .await?;
+    let replied_person = match msg.reply_to_message().unwrap().from() {
+        None => {
+            bot.send_message_tf(
+                msg.chat.id,
+                "Hmmm, qiziq odam ekan reply qilingan odam...",
+                msg,
+            )
+            .await?;
+
+            return Ok(());
+        }
+        Some(p) => p,
+    };
+
+    bot.send_message_tf(
+        msg.chat.id,
+        format!(
+            "<b>Xo'sh, <a href=\"tg://user?id={}\">{}</a>.</b> Qaysi mavzu taraflama yozgan odam chetlashdi?",
+            msg.from().unwrap().id,
+            msg.from().unwrap().first_name
+        ),
+        msg,
+    ) // view_detail(msg.reply_to_message().unwrap())
+    .parse_mode(ParseMode::Html)
+    .reply_markup(keyboard(
+        topics.list(),
+        msg.from().unwrap().id,
+        &replied_person.id,
+        &replied_person.first_name,
+    ))
+    .await?;
 
     Ok(())
 }
@@ -70,52 +98,45 @@ pub async fn callback(
 
     if q.from.id != UserId(args[0].parse::<u64>().unwrap()) {
         bot.answer_callback_query(q.id.clone())
-            .text("You're not the one to answer this!")
+            .text("Sen chaqirmadingku komandani! Nimaga o'z boshimchalik qilayabsan...")
             .show_alert(true)
             .send()
             .await?;
-
-        println!("Sent");
 
         return Ok(());
     }
 
     let title = args[1];
-    let code = topics.get(title.clone());
+    let code = topics.get(title);
     let message = q.message.clone().unwrap();
+    let sender = (args[2], args[3]);
 
     match code {
         None => {
-
             bot.delete_message(message.chat.id, message.id).await?;
             bot.send_message_tf(
                 message.chat.id,
                 "Unaqa topic borga o'xshamaydi do'stlar...",
-                &message
-            ).await?;
+                &message,
+            )
+            .await?;
 
-            return Ok(())
+            Ok(())
         }
         Some(c) => {
             bot.delete_message(message.chat.id, message.id).await?;
 
-            bot.send_message_tf(
-                message.chat.id,
-                view_detail(&message),
-                &message
-            )
-                .reply_markup()
+            bot.send_message_tf(message.chat.id, view_detail(sender), &message)
+                .reply_markup(callback_keyboard(title, c))
                 .parse_mode(ParseMode::Html)
                 .await?;
 
-            return Ok(())
+            Ok(())
         }
     }
-
-    Ok(())
 }
 
-pub fn view_detail(msg: &Message) -> String {
+pub fn view_detail(from: (&str, &str)) -> String {
     format!(
         "<b>Hurmatli <a href=\"tg://user?id={}\">{}</a>,</b>\
         \n\n\
@@ -124,16 +145,27 @@ pub fn view_detail(msg: &Message) -> String {
         Offtopic guruhimizda istalgan mavzuda suhbatlashish ruxsat etiladi. Boshqalarga halaqit qilmayliga 😉\
         \n\n\
         <b>Hurmat ila, Xinux Menejer</b>",
-        msg.from().unwrap().id,
-        msg.from().unwrap().first_name
+        from.0,
+        from.1
     )
 }
 
-pub fn keyboard(list: Vec<String>, owner: UserId) -> InlineKeyboardMarkup {
+pub fn keyboard<T>(
+    list: Vec<String>,
+    owner: UserId,
+    replied: &UserId,
+    name: T,
+) -> InlineKeyboardMarkup
+where
+    T: AsRef<str> + Display,
+{
     let mut keyboard = Keyboard::new();
 
     for (index, topic) in list.iter().enumerate() {
-        keyboard.text(&topic, &format!("warn_{}_{}", owner.0, topic));
+        keyboard.text(
+            topic,
+            &format!("warn_{}_{}_{}_{}", owner.0, topic, replied.0, name),
+        );
 
         if index % 2 == 1 {
             keyboard.row();
@@ -143,10 +175,13 @@ pub fn keyboard(list: Vec<String>, owner: UserId) -> InlineKeyboardMarkup {
     keyboard.get()
 }
 
-pub fn callback_keyboard(title: String) -> InlineKeyboardMarkup {
+pub fn callback_keyboard<T>(title: T, topic: &u32) -> InlineKeyboardMarkup
+where
+    T: AsRef<str> + Display + ToString,
+{
     let mut keyboard = Keyboard::new();
-    let capitalized
-    keyboard.url(format!("{} Chat"));
-
-    keyboard.get()
+    keyboard.url(
+        &format!("{} Chat", title.to_string().capitalize()),
+        &format!("https://t.me/xinuxuz/{}", topic),
+    )
 }
