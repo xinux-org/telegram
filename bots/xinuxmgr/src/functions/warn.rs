@@ -126,7 +126,7 @@ pub async fn callback(
         Some(c) => {
             bot.delete_message(message.chat.id, message.id).await?;
 
-            bot.send_message_tf(message.chat.id, view_detail(sender), &message)
+            bot.send_message_tf(message.chat.id, view_detail(sender, title.to_string()), &message)
                 .reply_markup(callback_keyboard(title, c))
                 .parse_mode(ParseMode::Html)
                 .await?;
@@ -136,17 +136,20 @@ pub async fn callback(
     }
 }
 
-pub fn view_detail(from: (&str, &str)) -> String {
+pub fn view_detail(from: (&str, &str), topic: String) -> String {
     format!(
         "<b>Hurmatli <a href=\"tg://user?id={}\">{}</a>,</b>\
         \n\n\
         Tushunishim bo'yicha siz mavzudan chetlayashayabsiz. Iltimos, \
-        quyidagi tugmachani bosish orqali bizning offtop guruhga o'tib oling! \
-        Offtopic guruhimizda istalgan mavzuda suhbatlashish ruxsat etiladi. Boshqalarga halaqit qilmayliga 😉\
+        quyidagi tugmachani bosish orqali bizning {} guruhga o'tib oling! \
+        {} guruhimizda istalgan mavzuda suhbatlashish ruxsat etiladi. Boshqalarga halaqit qilmayliga 😉\
         \n\n\
         <b>Hurmat ila, Xinux Menejer</b>",
         from.0,
-        from.1
+        from.1,
+        topic,
+        topic.capitalize()
+
     )
 }
 
