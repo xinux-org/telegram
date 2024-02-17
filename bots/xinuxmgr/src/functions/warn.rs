@@ -1,6 +1,8 @@
 use crate::utils::topics::Topics;
-use crate::utils::transformation::Capitalize;
-use crate::utils::{keyboard::Keyboard, message::Assistant};
+use orzklv::{
+    string::Transform,
+    telegram::{keyboard::Keyboard, topic::Topics as TopicsTrait},
+};
 use std::fmt::Display;
 use teloxide::{prelude::*, types::*};
 
@@ -91,11 +93,9 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
 pub async fn callback(
     bot: &Bot,
     q: &CallbackQuery,
-    args: &Vec<&str>,
+    args: &[&str],
     topics: &Topics,
 ) -> ResponseResult<()> {
-    println!("{:?}", args);
-
     if q.from.id != UserId(args[0].parse::<u64>().unwrap()) {
         bot.answer_callback_query(q.id.clone())
             .text("Sen chaqirmadingku komandani! Nimaga o'z boshimchalik qilayabsan...")
@@ -180,8 +180,10 @@ where
     T: AsRef<str> + Display + ToString,
 {
     let mut keyboard = Keyboard::new();
-    keyboard.url(
-        &format!("{} Chat", title.to_string().capitalize()),
-        &format!("https://t.me/xinuxuz/{}", topic),
-    )
+    keyboard
+        .url(
+            &format!("{} Chat", title.to_string().capitalize()),
+            &format!("https://t.me/xinuxuz/{}", topic),
+        )
+        .unwrap()
 }

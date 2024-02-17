@@ -1,6 +1,5 @@
+use orzklv::telegram::{timer::Timer, topic::Topics};
 use teloxide::{prelude::*, types::*};
-
-use crate::utils::message::{delete_timer, Assistant};
 
 static TEXT: &str = "<b>Salom Administrator!</b>
 
@@ -24,7 +23,9 @@ pub async fn trigger(bot: &Bot, msg: &Message) -> ResponseResult<()> {
         .parse_mode(ParseMode::Html)
         .await?;
 
-    delete_timer(bot, &message, 60 * 5).await?;
+    bot.delete_timer(message.chat.id, message.id, 60 * 5)
+        .await
+        .await?;
 
     Ok(())
 }
