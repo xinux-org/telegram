@@ -4,7 +4,7 @@ members = ["bots/*"]
 
 [workspace.package]
 edition = "2021"
-rust-version = "1.76"
+# rust-version = "1.76"
 
 license = "GPL-3"
 homepage = "https://github.com/xinux-org/telegram"
