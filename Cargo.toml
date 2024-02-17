@@ -1,10 +1,14 @@
 [workspace]
 resolver = "2"
-members = [
-    "bots/xinuxmgr",
-    "bots/xinitra",
-    "bots/xeonitte"
-]
+members = ["bots/*"]
+
+[workspace.package]
+edition = "2021"
+rust-version = "1.76"
+
+license = "GPL-3"
+homepage = "https://github.com/xinux-org/telegram"
+repository = "https://github.com/xinux-org/telegram"
 
 [profile.release]
 strip = true
