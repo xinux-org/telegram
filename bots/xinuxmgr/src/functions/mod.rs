@@ -56,9 +56,15 @@ pub async fn callback(
 pub async fn triggers(bot: Bot, msg: Message) -> Result<(), Box<dyn Error + Send + Sync>> {
     if let Some(thread) = msg.thread_id {
         if msg.chat.id.0 == -1001174263940 && thread == 178654 {
-            match bot.delete_message(msg.chat.id, msg.id).await {
-                Ok(_) => {}
-                Err(_) => {}
+            // Delete anything except image
+            if msg.photo().is_some() {
+                return Ok(());
+            }
+
+            // Yup, ditch it
+            return match bot.delete_message(msg.chat.id, msg.id).await {
+                Ok(_) => Ok(()),
+                Err(_) => Ok(()),
             };
         }
     }

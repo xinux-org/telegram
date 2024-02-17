@@ -126,10 +126,14 @@ pub async fn callback(
         Some(c) => {
             bot.delete_message(message.chat.id, message.id).await?;
 
-            bot.send_message_tf(message.chat.id, view_detail(sender, title.to_string()), &message)
-                .reply_markup(callback_keyboard(title, c))
-                .parse_mode(ParseMode::Html)
-                .await?;
+            bot.send_message_tf(
+                message.chat.id,
+                view_detail(sender, title.to_string()),
+                &message,
+            )
+            .reply_markup(callback_keyboard(title, c))
+            .parse_mode(ParseMode::Html)
+            .await?;
 
             Ok(())
         }
@@ -150,7 +154,6 @@ pub fn view_detail(from: (&str, &str), topic: String) -> String {
         from.1,
         topic,
         topic.capitalize()
-
     )
 }
 
