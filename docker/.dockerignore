@@ -21,7 +21,7 @@
 **/charts
 **/docker-compose*
 **/compose*
-**/Dockerfile*
+Dockerfile.xinuxmgr
 **/node_modules
 **/npm-debug.log
 **/secrets.dev.yaml

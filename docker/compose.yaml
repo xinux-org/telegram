@@ -3,7 +3,9 @@ version: '3.8'
 services:
   xinuxmgr:
     restart: always
-    build: ../bots/xinuxmgr
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile.xinuxmgr
     ports:
       - 8445:8445
-    env_file: ../bots/xinuxmgr/.env
+    env_file: ./.env.xinuxmgr
