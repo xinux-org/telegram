@@ -1,7 +1,7 @@
 use std::error::Error;
 use teloxide::{prelude::*, update_listeners::webhooks};
 use xinuxmgr::utils::topics::Topics;
-use xinuxmgr::{handler, utils::cargo_like_log};
+use xinuxmgr::{handler, utils::clog};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -27,7 +27,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     match std::env::var("WEBHOOK_URL") {
         Ok(v) => {
-            cargo_like_log("Mode", &format!("starting webhook on {}", v));
+            clog("Mode", &format!("starting webhook on {}", v));
             let addr = ([0, 0, 0, 0], 8445).into(); // port 8445
             let listener = webhooks::axum(bot, webhooks::Options::new(addr, v.parse().unwrap()))
                 .await
@@ -43,7 +43,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 .await;
         }
         Err(_) => {
-            cargo_like_log("Mode", "starting polling on localhost");
+            clog("Mode", "starting polling on localhost");
             dispatcher.dispatch().await;
         }
     }
