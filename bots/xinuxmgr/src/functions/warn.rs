@@ -146,14 +146,14 @@ pub fn view_detail(from: (&str, &str), topic: String) -> String {
         \n\n\
         Tushunishim bo'yicha siz mavzudan chetlayashayabsiz. Iltimos, \
         quyidagi tugmachani bosish orqali bizning {} guruhga o'tib oling! \
-        {} guruhimizda istalgan mavzuda suhbatlashish ruxsat etiladi. Boshqalarga halaqit qilmayliga 😉\
+        {} guruhimizda ushbu mavzuga oid narsalar haqida suhbatlashish ruxsat etiladi. \
+        Boshqalarga halaqit qilmayliga 😉\
         \n\n\
         <b>Hurmat ila, Xinux Menejer</b>",
         from.0,
         from.1,
         topic,
         topic.capitalize()
-
     )
 }
 

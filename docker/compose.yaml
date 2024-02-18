@@ -1,11 +1,13 @@
 version: '3.8'
+name: xinux
 
 services:
   xinuxmgr:
     restart: always
+    container_name: xinuxmgr
     build:
       context: ../
       dockerfile: ./docker/Dockerfile.xinuxmgr
     ports:
-      - 8445:8445
+      - "8445:8445"
     env_file: ./.env.xinuxmgr
