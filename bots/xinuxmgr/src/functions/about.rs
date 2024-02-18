@@ -1,5 +1,4 @@
-use crate::hooks;
-
+use crate::private;
 use orzklv::telegram::{keyboard::Keyboard, topic::Topics};
 use teloxide::{
     prelude::*,
@@ -13,9 +12,7 @@ Bizning botimiz aktiv tarzda shakllantirib boriladi. Buning ustida esa bir necha
 "#;
 
 pub async fn command(bot: &Bot, msg: &Message) -> ResponseResult<()> {
-    if !hooks::is_private(bot, msg).await.unwrap() {
-        return Ok(());
-    }
+    private!(bot, msg);
 
     bot.send_message_tf(msg.chat.id, TEXT, msg)
         .parse_mode(ParseMode::Html)

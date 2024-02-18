@@ -36,3 +36,16 @@ pub async fn is_private(bot: &Bot, msg: &Message) -> ResponseResult<bool> {
 
     Ok(false)
 }
+
+#[macro_export]
+macro_rules! private {
+    ($bot:expr, $msg:expr) => {
+        use $crate::hooks::is_private;
+
+        if !is_private($bot, $msg).await.unwrap() {
+            return Ok(());
+        }
+    };
+}
+
+pub use private;

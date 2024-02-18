@@ -1,4 +1,4 @@
-use crate::hooks;
+use crate::private;
 use orzklv::telegram::keyboard::Keyboard;
 use teloxide::{
     payloads::SendMessageSetters,
@@ -21,9 +21,7 @@ Iltimos qoidalarga oz bo'lsada vaqt ajratishni unutmang, bu muhim! Ushbu guruhda
 "#;
 
 pub async fn command(bot: &Bot, msg: &Message) -> ResponseResult<()> {
-    if !hooks::is_private(bot, msg).await.unwrap() {
-        return Ok(());
-    }
+    private!(bot, msg);
 
     bot.send_message(msg.chat.id, TEXT)
         .parse_mode(ParseMode::Html)
