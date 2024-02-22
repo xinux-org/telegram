@@ -10,4 +10,4 @@ services:
       dockerfile: ./docker/Dockerfile.xinuxmgr
     ports:
       - "8445:8445"
-    env_file: ./.env.xinuxmgr
+    env_file: ./.xinuxmgr
