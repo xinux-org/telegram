@@ -57,7 +57,7 @@ pub async fn triggers(bot: Bot, msg: Message) -> Result<(), Box<dyn Error + Send
     if let Some(thread) = msg.thread_id {
         if msg.chat.id.0 == -1001174263940 && thread == 178654 {
             // Delete anything except image
-            if msg.photo().is_some() {
+            if msg.photo().is_some() || msg.document().is_some() {
                 return Ok(());
             }
 
