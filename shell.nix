@@ -55,6 +55,18 @@ pkgs.stdenv.mkDerivation {
     export TELOXIDE_TOKEN=$TELOXIDE_TOKEN;
 
     # Start watching for changes
-    cargo watch -x "run --bin xinuxmgr"
+    # Start watching for changes in the background
+    cargo watch -x "run --bin xinuxmgr" &
+
+    # Store the PID of the background process
+    CARGO_WATCH_PID=$!
+
+    # Function to clean up the background process on exit
+    cleanup() {
+      kill $CARGO_WATCH_PID
+    }
+
+    # Trap EXIT signal to run cleanup function
+    trap cleanup EXIT
   '';
 }
