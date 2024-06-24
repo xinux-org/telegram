@@ -26,6 +26,9 @@ pkgs.stdenv.mkDerivation {
   buildInputs = [
     pkgs.openssl
     pkgs.darwin.apple_sdk.frameworks.Security
+    pkgs.darwin.apple_sdk.frameworks.CoreServices
+    pkgs.darwin.apple_sdk.frameworks.CoreFoundation
+    pkgs.darwin.apple_sdk.frameworks.SystemConfiguration
   ];
 
   # Set Environment Variables
