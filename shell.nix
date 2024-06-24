@@ -18,6 +18,7 @@ pkgs.stdenv.mkDerivation {
     pkgs.cargo 
     pkgs.cargo-watch
     pkgs.pkg-config
+    pkgs.rust-analyzer
     pkgs.llvmPackages.llvm
     pkgs.llvmPackages.clang
   ];
