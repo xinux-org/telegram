@@ -187,10 +187,16 @@ where
     T: AsRef<str> + Display + ToString,
 {
     let mut keyboard = Keyboard::new();
+
+    let url: String = match topic {
+        0 => "https://t.me/flossuzc/115778".to_string(),
+        _ => format!("https://t.me/xinuxuz/{}", topic),
+    };
+
     keyboard
         .url(
             &format!("{} Chat", title.to_string().capitalize()),
-            &format!("https://t.me/xinuxuz/{}", topic),
+            &url.to_string(),
         )
         .unwrap()
 }

@@ -1894,14 +1894,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "xeonitte"
-version = "0.1.0"
-
-[[package]]
-name = "xeonix"
-version = "0.1.0"
-
-[[package]]
 name = "xinuxmgr"
 version = "0.1.0"
 dependencies = [

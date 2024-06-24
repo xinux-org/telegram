@@ -1,7 +1,7 @@
 [
   {
     "name": "asosiy",
-    "id": null
+    "id": 1
   },
   {
     "name": "yordam",
@@ -13,27 +13,15 @@
   },
   {
     "name": "offtopic",
-    "id": 178666
+    "id": 0
   },
   {
-    "name": "xinux",
-    "id": 178640
-  },
-  {
-    "name": "coding",
+    "name": "nix scripting",
     "id": 180629
   },
   {
     "name": "devops",
     "id": 179980
-  },
-  {
-    "name": "windows",
-    "id": 180916
-  },
-  {
-    "name": "i10n",
-    "id": 182187
   },
   {
     "name": "gaming",
