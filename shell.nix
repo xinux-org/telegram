@@ -34,6 +34,7 @@ pkgs.stdenv.mkDerivation {
   # Set Environment Variables
   RUST_BACKTRACE = 1;
   NIX_LDFLAGS = "-L${(getLibFolder pkgs.libiconv)} ${darwinOptions}";
+  RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
   LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
     (getLibFolder pkgs.gcc)
     (getLibFolder pkgs.libiconv)
