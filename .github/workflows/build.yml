@@ -1,16 +1,14 @@
 name: Build CI
 
-on:
-  push:
-    branches: ["master"]
+on: [push]
 
 env:
   REGISTRY: ghcr.io
   IMAGE_AUTHOR: xinux-org
 
 permissions:
-    contents: write
-    packages: write
+  contents: write
+  packages: write
 
 jobs:
   xinuxmgr:
