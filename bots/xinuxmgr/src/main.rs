@@ -1,3 +1,4 @@
+use libxinux::pkgs::any::Any as Pkgs;
 use std::error::Error;
 use teloxide::{prelude::*, update_listeners::webhooks};
 use xinuxmgr::utils::topics::Topics;
@@ -10,10 +11,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     let bot = Bot::from_env();
     let topics = Topics::new();
+    let pkgs = Pkgs::new().unwrap();
 
     // Dispatcher flow control
     let mut dispatcher = Dispatcher::builder(bot.clone(), handler())
-        .dependencies(dptree::deps![topics])
+        .dependencies(dptree::deps![topics, pkgs])
         // If no handler succeeded to handle an update, this closure will be called
         .default_handler(|upd| async move {
             log::warn!("Unhandled update: {:?}", upd);

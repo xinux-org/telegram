@@ -1,10 +1,13 @@
 pub mod about;
 pub mod check;
 pub mod help;
+pub mod inline;
 pub mod joined;
 pub mod rules;
 pub mod start;
 pub mod warn;
+
+pub use inline::inline;
 
 use crate::utils::topics::Topics;
 use crate::Command;

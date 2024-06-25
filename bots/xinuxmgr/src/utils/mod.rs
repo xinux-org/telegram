@@ -1,3 +1,4 @@
+pub mod inlines;
 pub mod topics;
 
 pub fn clog(title: &str, message: &str) {
