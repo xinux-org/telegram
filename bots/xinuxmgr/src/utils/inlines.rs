@@ -21,6 +21,15 @@ pub static TOO_MANY: &str = r#"
 <b>Foydalanuvchi, siz keraklidan ko'p parametrlar kiritdingiz!</b>
 "#;
 
+pub static INTERNAL_ERROR: &str = r#"
+<b>API dan ma'lumot olishda xatolik yuz berdi!</b>
+Iltimos, qayta yoki keyinroq urinib ko'ring!
+"#;
+
+pub static NOT_FOUND: &str = r#"
+<b>There are no results related to {}!</b>\nPlease, Try to search with other names or parameters!
+"#;
+
 pub fn view_generate(d: &Data) -> String {
     let d = d.clone();
     let mut result = String::new();

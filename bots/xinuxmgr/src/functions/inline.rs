@@ -3,6 +3,29 @@ use libxinux::pkgs::any::{Any as Pkgs, Data};
 use std::error::Error;
 use teloxide::{prelude::*, types::*};
 
+macro_rules! return_err_answer {
+    ($bot:ident, $q:ident, $title:expr, $msg:expr) => {
+        return {
+            $bot.answer_inline_query(
+                $q.id,
+                vec![InlineQueryResultArticle::new(
+                    uuid::Uuid::new_v4(),
+                    $title,
+                    InputMessageContent::Text(
+                        InputMessageContentText::new($msg)
+                            .parse_mode(ParseMode::Html)
+                            .disable_web_page_preview(true),
+                    ),
+                )
+                .reply_markup(err_keyboard())
+                .into()],
+            )
+            .await?;
+            Ok(())
+        }
+    };
+}
+
 pub async fn inline(
     bot: Bot,
     pkgs: Pkgs,
@@ -13,124 +36,23 @@ pub async fn inline(
     let parsed = parsed.split_whitespace().collect::<Vec<&str>>();
 
     match parsed.len() {
-        0 => {
-            return {
-                bot.answer_inline_query(
-                    q.id,
-                    vec![InlineQueryResultArticle::new(
-                        "101",
-                        "Qidirishni boshlang!",
-                        InputMessageContent::Text(
-                            InputMessageContentText::new(NO_INPUT)
-                                .parse_mode(ParseMode::Html)
-                                .disable_web_page_preview(true),
-                        ),
-                    )
-                    .reply_markup(err_keyboard())
-                    .into()],
-                )
-                .await?;
-                Ok(())
-            };
-        }
-        1 => {
-            return {
-                bot.answer_inline_query(
-                    q.id,
-                    vec![InlineQueryResultArticle::new(
-                        "102",
-                        "Parametrlar yetarli emas!",
-                        InputMessageContent::Text(
-                            InputMessageContentText::new(NOT_ENOUGH)
-                                .parse_mode(ParseMode::Html)
-                                .disable_web_page_preview(true),
-                        ),
-                    )
-                    .reply_markup(err_keyboard())
-                    .into()],
-                )
-                .await?;
-                Ok(())
-            };
-        }
+        0 => return_err_answer!(bot, q, "Qidirishni boshlang!", NO_INPUT),
+        1 => return_err_answer!(bot, q, "Parametrlar yetarli emas!", NOT_ENOUGH),
         2 => {}
-        3.. => {
-            return {
-                bot.answer_inline_query(
-                    q.id,
-                    vec![InlineQueryResultArticle::new(
-                        "103",
-                        "Parametrlar haddan ko'p!",
-                        InputMessageContent::Text(
-                            InputMessageContentText::new(TOO_MANY)
-                                .parse_mode(ParseMode::Html)
-                                .disable_web_page_preview(true),
-                        ),
-                    )
-                    .reply_markup(err_keyboard())
-                    .into()],
-                )
-                .await?;
-                Ok(())
-            };
-        }
+        3.. => return_err_answer!(bot, q, "Parametrlar haddan ko'p!", TOO_MANY)
     }
 
     let request = pkgs.search(parsed[1]).await;
 
-    println!("{:?}", request);
-
     let request: Vec<Data> = match request {
         Ok(v) => v,
-        Err(_) => {
-            return {
-                bot.answer_inline_query(
-                    q.id,
-                    vec![InlineQueryResultArticle::new(
-                        "500",
-                        "Xatolik yuz berdi!",
-                        InputMessageContent::Text(
-                            InputMessageContentText::new(
-                                format!("<b>API dan ma'lumot olishda xatolik yuz berdi!</b>\nIltimos, qayta yoki keyinroq urinib ko'ring!")
-                            )
-                            .parse_mode(ParseMode::Html)
-                            .disable_web_page_preview(true),
-                        ),
-                    )
-                    .reply_markup(err_keyboard())
-                    .into()],
-                )
-                .await?;
-                Ok(())
-            };
-        }
+        Err(_) => return_err_answer!(bot, q, "Xatolik yuz berdi!", INTERNAL_ERROR)
     };
 
-    // get only 50 results
     let request: Vec<&Data> = request.iter().take(49).collect();
 
     if request.is_empty() {
-        return {
-            bot.answer_inline_query(
-                q.id,
-                vec![InlineQueryResultArticle::new(
-                    "404",
-                    "Couldn't find!",
-                    InputMessageContent::Text(
-                        InputMessageContentText::new(
-                            format!("<b>There are no results related to {}!</b>\nPlease, Try to search with other names or parameters!",
-                            q.query.clone())
-                        )
-                            .parse_mode(ParseMode::Html)
-                            .disable_web_page_preview(true),
-                    ),
-                )
-                    .reply_markup(err_keyboard())
-                .into()],
-            )
-            .await?;
-            Ok(())
-        };
+        return_err_answer!(bot, q, "Hech narsa topilmadi!", NOT_FOUND)
     }
 
     let request: Vec<InlineQueryResult> = request
