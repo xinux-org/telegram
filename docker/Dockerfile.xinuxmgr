@@ -1,4 +1,4 @@
-ARG RUST_VERSION=1.74.0
+ARG RUST_VERSION=1.79.0
 ARG APP_NAME=xinuxmgr
 
 FROM rust:${RUST_VERSION}-slim-bullseye AS build
