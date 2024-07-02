@@ -27,7 +27,8 @@ Iltimos, qayta yoki keyinroq urinib ko'ring!
 "#;
 
 pub static NOT_FOUND: &str = r#"
-<b>There are no results related to {}!</b>\nPlease, Try to search with other names or parameters!
+<b>Ushbu so'rovga oid natija mavjud emas!</b>
+Iltimos, boshqa ism bilan yoki keyinroq yana bir bor urinib ko'ring!
 "#;
 
 pub fn view_generate(d: &Data) -> String {
