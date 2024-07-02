@@ -1,13 +1,16 @@
-use crate::{functions::start::keyboard, Command};
-use orzklv::telegram::topic::Topics;
-use teloxide::{payloads::SendMessageSetters, prelude::*, types::ParseMode};
+use crate::Command;
+use orzklv::telegram::{keyboard::Keyboard, topic::Topics};
+use teloxide::{
+    payloads::SendMessageSetters,
+    prelude::*,
+    types::{InlineKeyboardMarkup, ParseMode},
+};
 
 static TEXT: &[(&str, &str)] = &[
     ("help", "ushbu xabarni qayta ko'rsatish"),
     ("rules", "qoidalarni aks ettirish"),
     ("check", "chaqirilgan joydan parametrlarni ko'rish"),
     ("about", "ushbu botimizning rivojlantirish qismi"),
-    ("feedback", "ushbu bot haqida fikr va taklif qoldirish"),
     (
         "warn",
         "reply qilingan odamga offtop borligi haqida eslatish",
@@ -27,10 +30,18 @@ pub async fn command(bot: &Bot, msg: &Message, _cmd: &Command) -> ResponseResult
         text.push('\n');
     }
 
+    text.push('\n');
+    text.push_str("<b>Hamda, ushbu bot yordamida siz inline so'rov orqali arch yoki nixos ga oid paketlarni qidirishingiz mumkin!</b>");
+
     bot.send_message_tf(msg.chat.id, text, msg)
         .parse_mode(ParseMode::Html)
         .reply_markup(keyboard())
         .await?;
 
     Ok(())
+}
+
+pub fn keyboard() -> InlineKeyboardMarkup {
+    let mut keyboard = Keyboard::new();
+    keyboard.switch_inline_current("Inline rejimini sinab kor'ish", "arch linux")
 }
