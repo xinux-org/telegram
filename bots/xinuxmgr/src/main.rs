@@ -29,6 +29,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     match std::env::var("WEBHOOK_URL") {
         Ok(v) => {
+            bot.set_webhook(v.parse().unwrap()).await?;
+
             clog("Mode", &format!("starting webhook on {}", v));
             let addr = ([0, 0, 0, 0], 8445).into(); // port 8445
             let listener = webhooks::axum(bot, webhooks::Options::new(addr, v.parse().unwrap()))
