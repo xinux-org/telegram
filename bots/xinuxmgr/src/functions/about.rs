@@ -25,6 +25,6 @@ pub async fn command(bot: &Bot, msg: &Message) -> ResponseResult<()> {
 pub fn keyboard() -> InlineKeyboardMarkup {
     let mut keyboard = Keyboard::new();
     keyboard
-        .url("Ochiq Havolalar", "https://github.com/xinuxuz/telegram")
+        .url("Ochiq Havolalar", "https://github.com/xinux-org/telegram")
         .unwrap()
 }

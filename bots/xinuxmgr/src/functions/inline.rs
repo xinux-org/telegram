@@ -31,9 +31,13 @@ pub async fn inline(
     pkgs: Pkgs,
     q: InlineQuery,
 ) -> Result<(), Box<dyn Error + Send + Sync>> {
+    println!("Inline request has reached to function");
+
     let parsed: String = q.query.clone();
 
     let parsed = parsed.split_whitespace().collect::<Vec<&str>>();
+
+    println!("Parsed: {:?}", parsed);
 
     match parsed.len() {
         0 => return_err_answer!(bot, q, "Qidirishni boshlang!", NO_INPUT),
@@ -41,6 +45,8 @@ pub async fn inline(
         2 => {}
         3.. => return_err_answer!(bot, q, "Parametrlar haddan ko'p!", TOO_MANY),
     }
+
+    println!("Inputs were checked successfully");
 
     match parsed[0] {
         "arch" => {
@@ -83,6 +89,8 @@ pub async fn inline(
         }
         _ => return_err_answer!(bot, q, "Noto'g'ri distributiv!", NOT_FOUND),
     }
+
+    println!("Inline request has been processed successfully");
 
     Ok(())
 }
