@@ -33,7 +33,7 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
     }
 
     if msg.reply_to_message().is_none()
-        || msg.reply_to_message().unwrap().id == MessageId(msg.thread_id.unwrap().0.0)
+        || msg.reply_to_message().unwrap().id == MessageId(msg.thread_id.unwrap().0 .0)
     {
         return {
             bot.send_message_tf(msg.chat.id, TEXT_NON_REPLY, msg)
