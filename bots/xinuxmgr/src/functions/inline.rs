@@ -14,7 +14,13 @@ macro_rules! return_err_answer {
                     InputMessageContent::Text(
                         InputMessageContentText::new($msg)
                             .parse_mode(ParseMode::Html)
-                            .disable_web_page_preview(true),
+                            .link_preview_options(LinkPreviewOptions {
+                                is_disabled: true,
+                                url: None,
+                                prefer_small_media: false,
+                                prefer_large_media: false,
+                                show_above_text: false,
+                            })
                     ),
                 )
                 .reply_markup(err_keyboard())
@@ -67,11 +73,17 @@ pub async fn inline(
                             InputMessageContent::Text(
                                 InputMessageContentText::new(view_generate(d))
                                     .parse_mode(ParseMode::Html)
-                                    .disable_web_page_preview(true),
+                                    .link_preview_options(LinkPreviewOptions {
+                                        is_disabled: true,
+                                        url: None,
+                                        prefer_small_media: false,
+                                        prefer_large_media: false,
+                                        show_above_text: false,
+                                    })
                             ),
                         )
-                        .description(d.description.clone().unwrap())
-                        .reply_markup(kb_generate(d)),
+                            .description(d.description.clone().unwrap())
+                            .reply_markup(kb_generate(d)),
                     )
                 })
                 .collect();

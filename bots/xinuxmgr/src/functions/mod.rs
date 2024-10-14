@@ -58,7 +58,7 @@ pub async fn callback(
 
 pub async fn triggers(bot: Bot, msg: Message) -> Result<(), Box<dyn Error + Send + Sync>> {
     if let Some(thread) = msg.thread_id {
-        if msg.chat.id.0 == -1001174263940 && thread == 178654 {
+        if msg.chat.id.0 == -1001174263940 && thread.0.0 == 178654 {
             // Delete anything except image
             if msg.photo().is_some() || msg.document().is_some() {
                 return Ok(());
@@ -72,7 +72,7 @@ pub async fn triggers(bot: Bot, msg: Message) -> Result<(), Box<dyn Error + Send
         }
     }
 
-    if let Some(user) = msg.from() {
+    if let Some(ref user) = msg.from {
         if let Some(username) = user.username.clone() {
             if username == "Channel_Bot" {
                 // Try to delete message and ignore error

@@ -33,7 +33,7 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
     }
 
     if msg.reply_to_message().is_none()
-        || msg.reply_to_message().unwrap().id == MessageId(msg.thread_id.unwrap())
+        || msg.reply_to_message().unwrap().id == MessageId(msg.thread_id.unwrap().0.0)
     {
         return {
             bot.send_message_tf(msg.chat.id, TEXT_NON_REPLY, msg)
@@ -43,7 +43,7 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
     }
 
     // if replied person is bot itself, send a fail message
-    if let Some(user) = msg.reply_to_message().as_ref().unwrap().from() {
+    if let Some(user) = &msg.reply_to_message().as_ref().unwrap().from {
         if user.username.is_some() && user.username.clone().unwrap() == me.username() {
             return {
                 bot.send_message_tf(msg.chat.id, TEXT_FAIL, msg).await?;
@@ -55,7 +55,7 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
     bot.delete_message(msg.chat.id, msg.reply_to_message().unwrap().id)
         .await?;
 
-    let replied_person = match msg.reply_to_message().unwrap().from() {
+    let replied_person = match &msg.reply_to_message().unwrap().from {
         None => {
             bot.send_message_tf(
                 msg.chat.id,
@@ -73,15 +73,15 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
         msg.chat.id,
         format!(
             "<b>Xo'sh, <a href=\"tg://user?id={}\">{}</a>.</b> Qaysi mavzu taraflama yozgan odam chetlashdi?",
-            msg.from().unwrap().id,
-            msg.from().unwrap().first_name
+            msg.from.clone().unwrap().id,
+            msg.from.clone().unwrap().first_name
         ),
         msg,
     ) // view_detail(msg.reply_to_message().unwrap())
     .parse_mode(ParseMode::Html)
     .reply_markup(keyboard(
         topics.list(),
-        msg.from().unwrap().id,
+        msg.from.clone().unwrap().id,
         &replied_person.id,
         &replied_person.first_name,
     ))
@@ -113,23 +113,23 @@ pub async fn callback(
 
     match code {
         None => {
-            bot.delete_message(message.chat.id, message.id).await?;
+            bot.delete_message(message.chat().id, message.id()).await?;
             bot.send_message_tf(
-                message.chat.id,
+                message.chat().id,
                 "Unaqa topic borga o'xshamaydi do'stlar...",
-                &message,
+                &message.regular_message().unwrap(),
             )
             .await?;
 
             Ok(())
         }
         Some(c) => {
-            bot.delete_message(message.chat.id, message.id).await?;
+            bot.delete_message(message.chat().id, message.id()).await?;
 
             bot.send_message_tf(
-                message.chat.id,
+                message.chat().id,
                 view_detail(sender, title.to_string()),
-                &message,
+                &message.regular_message().unwrap(),
             )
             .reply_markup(callback_keyboard(title, c))
             .parse_mode(ParseMode::Html)
