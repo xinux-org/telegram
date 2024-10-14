@@ -11,11 +11,11 @@ let
 in
 pkgs.stdenv.mkDerivation {
   name = "telegram";
-  
+
   nativeBuildInputs = [
     pkgs.gcc
-    pkgs.rustc 
-    pkgs.cargo 
+    pkgs.rustc
+    pkgs.cargo
     pkgs.cargo-watch
     pkgs.pkg-config
     pkgs.rust-analyzer
@@ -48,25 +48,25 @@ pkgs.stdenv.mkDerivation {
       read -r TELOXIDE_TOKEN;
       echo "TELOXIDE_TOKEN=$TELOXIDE_TOKEN" > .env;
     else
-      source .env; 
+      source .env;
     fi
 
     # Set the environment variable
-    export TELOXIDE_TOKEN=$TELOXIDE_TOKEN;
+    # export TELOXIDE_TOKEN=$TELOXIDE_TOKEN;
 
     # Start watching for changes
     # Start watching for changes in the background
-    cargo watch -x "run --bin xinuxmgr" &
+    # cargo watch -x "run --bin xinuxmgr" &
 
     # Store the PID of the background process
-    CARGO_WATCH_PID=$!
+    # CARGO_WATCH_PID=$!
 
     # Function to clean up the background process on exit
-    cleanup() {
-      kill $CARGO_WATCH_PID
-    }
+    # cleanup() {
+    #   kill $CARGO_WATCH_PID
+    # }
 
     # Trap EXIT signal to run cleanup function
-    trap cleanup EXIT
+    # trap cleanup EXIT
   '';
 }
