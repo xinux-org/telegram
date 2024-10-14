@@ -10,25 +10,38 @@ let
   '' else "";
 in
 pkgs.stdenv.mkDerivation {
-  name = "telegram";
+  name = "xinux-bots";
 
-  nativeBuildInputs = [
-    pkgs.gcc
-    pkgs.rustc
-    pkgs.cargo
-    pkgs.cargo-watch
-    pkgs.pkg-config
-    pkgs.rust-analyzer
-    pkgs.llvmPackages.llvm
-    pkgs.llvmPackages.clang
+  nativeBuildInputs = with pkgs; [
+  # LLVM & GCC
+  gcc
+  cmake
+  gnumake
+  pkg-config
+  llvmPackages.llvm
+  llvmPackages.clang
+
+  # Hail the Nix
+  nixd
+  nixpkgs-fmt
+
+  # Launch scripts
+  just
+
+  # Rust
+  rustc
+  cargo
+  clippy
+  cargo-watch
+  rust-analyzer
   ];
 
-  buildInputs = [
-    pkgs.openssl
-    pkgs.darwin.apple_sdk.frameworks.Security
-    pkgs.darwin.apple_sdk.frameworks.CoreServices
-    pkgs.darwin.apple_sdk.frameworks.CoreFoundation
-    pkgs.darwin.apple_sdk.frameworks.SystemConfiguration
+  buildInputs = with pkgs; [
+    openssl
+    darwin.apple_sdk.frameworks.Security
+    darwin.apple_sdk.frameworks.CoreServices
+    darwin.apple_sdk.frameworks.CoreFoundation
+    darwin.apple_sdk.frameworks.SystemConfiguration
   ];
 
   # Set Environment Variables
