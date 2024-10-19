@@ -117,7 +117,7 @@ pub async fn callback(
             bot.send_message_tf(
                 message.chat().id,
                 "Unaqa topic borga o'xshamaydi do'stlar...",
-                &message.regular_message().unwrap(),
+                message.regular_message().unwrap(),
             )
             .await?;
 
@@ -129,7 +129,7 @@ pub async fn callback(
             bot.send_message_tf(
                 message.chat().id,
                 view_detail(sender, title.to_string()),
-                &message.regular_message().unwrap(),
+                message.regular_message().unwrap(),
             )
             .reply_markup(callback_keyboard(title, c))
             .parse_mode(ParseMode::Html)

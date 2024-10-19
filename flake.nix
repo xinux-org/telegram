@@ -13,24 +13,14 @@
   };
 
   outputs =
-    { nixpkgs
+    { self
+    , nixpkgs
     , flake-utils
     , ...
     } @ inputs:
     flake-utils.lib.eachDefaultSystem (system:
     let
       pkgs = nixpkgs.legacyPackages.${system};
-
-      binary = pkgs.callPackage ./. { };
-
-      docker = pkgs.dockerTools.streamLayeredImage {
-        name = "xinuxmgr";
-        tag = "latest";
-        contents = [ binary ];
-        config = {
-          Cmd = [ "${binary}/bin/xinuxmgr" ];
-        };
-      };
     in
     {
       # Nix script formatter
@@ -40,9 +30,9 @@
       devShells.default = import ./shell.nix { inherit pkgs; };
 
       # Output package
-      packages = {
-        inherit docker;
-        default = binary;
-      };
+      packages.default = pkgs.callPackage ./. { };
+
+      # Overlay module
+      nixosModules.xinuxbots = import ./module.nix self;
     });
 }
