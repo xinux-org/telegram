@@ -15,7 +15,7 @@ let
   manifest = (pkgs.lib.importTOML ./Cargo.toml).package;
   binary = (pkgs.lib.importTOML ./bots/xinuxmgr/Cargo.toml).package;
 in
-pkgs.rustPlatform.buildRustPackage rec {
+pkgs.rustPlatform.buildRustPackage {
   pname = "xinuxmgr";
   version = binary.version;
   cargoLock.lockFile = ./Cargo.lock;

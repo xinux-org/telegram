@@ -2,7 +2,6 @@ flake:
 { config
 , lib
 , pkgs
-, inputs
 , ...
 }:
 let
@@ -20,7 +19,7 @@ in
         type = lib.types.str;
         default = "/var/lib/xinuxbots";
         description = lib.mdDoc ''
-          The path where Foundry keeps its config, data, and logs.
+          The path where Xinux Bots keeps its config, data, and logs.
         '';
       };
 
@@ -36,7 +35,7 @@ in
         type = lib.types.package;
         default = xinuxbots;
         description = ''
-          The xinux bots package to use with the service.
+          The Xinux Bots package to use with the service.
         '';
       };
     };
@@ -58,6 +57,11 @@ in
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
+
+      environment = {
+        LANG = "en_US.UTF-8";
+        PATH = cfg.secret;
+      };
 
       serviceConfig = {
         User = "xinuxbots";
