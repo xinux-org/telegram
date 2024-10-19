@@ -1,3 +1,5 @@
+# Template & Guide from
+# https://github.com/reckenrode/nix-foundryvtt/blob/main/modules/foundryvtt/default.nix
 flake:
 { config
 , lib
