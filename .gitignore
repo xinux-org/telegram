@@ -1,4 +1,13 @@
+# Environmental variables
 .env
-nohup.out
+
+# Cargo files
 /target
+
+# IDE & Editors
 .idea
+.vscode
+nohup.out
+
+# Nix build output
+result
