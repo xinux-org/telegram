@@ -64,7 +64,7 @@ pkgs.rustPlatform.buildRustPackage {
   meta = with lib; {
     homepage = manifest.workspace.package.homepage;
     description = "Telegram bots for Xinux community";
-    license = with lib.licenses; [ mit asl20 ];
+    license = with lib.licenses; [ gpl3Only ];
 
     platforms = with platforms; linux ++ darwin;
 

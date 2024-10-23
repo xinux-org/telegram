@@ -10,12 +10,13 @@ let
       -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.SystemConfiguration)}
     '' else "";
 
-    darwinPkgs = if pkgs.stdenv.isDarwin then with pkgs; [
+  darwinPkgs =
+    if pkgs.stdenv.isDarwin then with pkgs; [
       darwin.apple_sdk.frameworks.Security
       darwin.apple_sdk.frameworks.CoreServices
       darwin.apple_sdk.frameworks.CoreFoundation
       darwin.apple_sdk.frameworks.SystemConfiguration
-    ] else [];
+    ] else [ ];
 in
 pkgs.stdenv.mkDerivation {
   name = "xinux-bots";

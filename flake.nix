@@ -18,21 +18,25 @@
     , flake-utils
     , ...
     }:
-    flake-utils.lib.eachDefaultSystem (system:
-    let
-      pkgs = nixpkgs.legacyPackages.${system};
-    in
+    flake-utils.lib.eachDefaultSystem
+      (system:
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
+      in
+      {
+        # Nix script formatter
+        formatter = pkgs.nixpkgs-fmt;
+
+        # Development environment
+        devShells.default = import ./shell.nix { inherit pkgs; };
+
+        # Output package
+        packages.default = pkgs.callPackage ./. { };
+
+      })
+    //
     {
-      # Nix script formatter
-      formatter = pkgs.nixpkgs-fmt;
-
-      # Development environment
-      devShells.default = import ./shell.nix { inherit pkgs; };
-
-      # Output package
-      packages.default = pkgs.callPackage ./. { };
-
       # Overlay module
       nixosModules.xinuxbots = import ./module.nix self;
-    });
+    };
 }
