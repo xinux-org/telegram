@@ -8,7 +8,7 @@ flake:
 }:
 let
   cfg = config.services.xinuxbots;
-  inherit (flake.packages.${pkgs.stdenv.hostPlatform.system}) xinuxbots;
+  xinuxbots = flake.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   options = {
