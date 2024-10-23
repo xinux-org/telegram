@@ -60,11 +60,6 @@ in
       wants = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
 
-      environment = {
-        LANG = "en_US.UTF-8";
-        PATH = cfg.secret;
-      };
-
       serviceConfig = {
         User = "xinuxbots";
         Group = "xinuxbots";
@@ -72,6 +67,7 @@ in
         ExecStart = "${lib.getBin cfg.package}/bin/xinuxmgr";
         StateDirectory = "xinuxbots";
         StateDirectoryMode = "0750";
+        EnvironmentFile = cfg.secret;
 
         # Hardening
         CapabilityBoundingSet = [
