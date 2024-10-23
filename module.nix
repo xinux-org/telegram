@@ -8,7 +8,7 @@ flake:
 }:
 let
   cfg = config.services.xinuxbots;
-  xinuxbots = flake.packages.${pkgs.stdenv.hostPlatform.system};
+  xinuxbots = flake.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   options = {
