@@ -11,6 +11,7 @@ static TEXT_NON_REPLY: &str = "↪ Reply bilan ko'rsatingchi habarni!";
 static NON_XINUX: &str = "Ebe hay, biz Xinux guruhida emasga o'xshaymiz...";
 
 pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> ResponseResult<()> {
+    // if chat is not xinux, delete
     if msg.chat.id != ChatId(-1001174263940) {
         return {
             bot.send_message_tf(msg.chat.id, NON_XINUX, msg).await?;
@@ -18,6 +19,7 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
         };
     }
 
+    // try to delete the message that tried to trigger
     let attempt = bot.delete_message(msg.chat.id, msg.id).await;
     match attempt {
         Ok(_) => {}
@@ -32,8 +34,9 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
         }
     }
 
+    // if there's no replied message, warn
     if msg.reply_to_message().is_none()
-        || msg.reply_to_message().unwrap().id == MessageId(msg.thread_id.unwrap().0 .0)
+        || (msg.thread_id.is_some() && (msg.id == msg.reply_to_message().unwrap().id))
     {
         return {
             bot.send_message_tf(msg.chat.id, TEXT_NON_REPLY, msg)
@@ -52,8 +55,22 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
         }
     }
 
-    bot.delete_message(msg.chat.id, msg.reply_to_message().unwrap().id)
-        .await?;
+    // try to delete the replied message
+    let attempt = bot
+        .delete_message(msg.chat.id, msg.reply_to_message().unwrap().id)
+        .await;
+    match attempt {
+        Ok(_) => {}
+        Err(_) => {
+            bot.send_message_tf(
+                msg.chat.id,
+                "Ebe hay, men habarlar o'chirish uchun yetarlicha imtiyozim yo'q!",
+                msg,
+            )
+            .await?;
+            return Ok(());
+        }
+    }
 
     let replied_person = match &msg.reply_to_message().unwrap().from {
         None => {
@@ -69,7 +86,7 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
         Some(p) => p,
     };
 
-    bot.send_message_tf(
+    let conclusion = bot.send_message_tf(
         msg.chat.id,
         format!(
             "<b>Xo'sh, <a href=\"tg://user?id={}\">{}</a>.</b> Qaysi mavzu taraflama yozgan odam chetlashdi?",
@@ -85,7 +102,29 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
         &replied_person.id,
         &replied_person.first_name,
     ))
-    .await?;
+    .await;
+
+    match conclusion {
+        Ok(_) => {}
+        Err(_) => {
+            bot.send_message(
+              msg.chat.id,
+              format!(
+                "<b>Xo'sh, <a href=\"tg://user?id={}\">{}</a>.</b> Qaysi mavzu taraflama yozgan odam chetlashdi?",
+                msg.from.clone().unwrap().id,
+                msg.from.clone().unwrap().first_name
+              )
+            )
+            .parse_mode(ParseMode::Html)
+            .reply_markup(keyboard(
+                topics.list(),
+                msg.from.clone().unwrap().id,
+                &replied_person.id,
+                &replied_person.first_name,
+            ))
+            .await?;
+        }
+    };
 
     Ok(())
 }

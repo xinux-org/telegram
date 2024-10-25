@@ -7,21 +7,21 @@ flake:
 , ...
 }:
 let
-  cfg = config.services.xinuxbots;
-  xinuxbots = flake.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  cfg = config.services.xinux.bot;
+  bot = flake.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   options = {
-    services.xinuxbots = {
+    services.xinux.bot = {
       enable = lib.mkEnableOption ''
-        Xinux Bots: Telegram bots made by Xinux team for Xinux community.
+        Xinux Bot: Telegram bot made by Xinux team for Xinux community.
       '';
 
       dataDir = lib.mkOption {
         type = lib.types.str;
-        default = "/var/lib/xinuxbots";
+        default = "/var/lib/xinux/bot";
         description = lib.mdDoc ''
-          The path where Xinux Bots keeps its config, data, and logs.
+          The path where Xinux Bot keeps its config, data, and logs.
         '';
       };
 
@@ -29,31 +29,31 @@ in
         type = lib.types.nullOr lib.types.path;
         default = null;
         description = ''
-          Path to secret key of Xinux Bots.
+          Path to secret key of Xinux Bot.
         '';
       };
 
       package = lib.mkOption {
         type = lib.types.package;
-        default = xinuxbots;
+        default = bot;
         description = ''
-          The Xinux Bots package to use with the service.
+          The Xinux Bot package to use with the service.
         '';
       };
     };
   };
 
   config = lib.mkIf cfg.enable {
-    users.users.xinuxbots = {
-      description = "Xinux bots management user";
+    users.users.xinux-bot = {
+      description = "Xinux Bot management user";
       isSystemUser = true;
-      group = "xinuxbots";
+      group = "xinux-bot";
     };
 
-    users.groups.xinuxbots = { };
+    users.groups.xinux-bot = { };
 
-    systemd.services.xinuxbots = {
-      description = "Xinux bots deployment";
+    systemd.services.xinux-bot = {
+      description = "Xinux Bot for managing telegram community";
       documentation = [ "https://xinux.uz/" ];
 
       after = [ "network-online.target" ];
@@ -61,11 +61,11 @@ in
       wantedBy = [ "multi-user.target" ];
 
       serviceConfig = {
-        User = "xinuxbots";
-        Group = "xinuxbots";
+        User = "xinux-bot";
+        Group = "xinux-bot";
         Restart = "always";
-        ExecStart = "${lib.getBin cfg.package}/bin/xinuxmgr";
-        StateDirectory = "xinuxbots";
+        ExecStart = "${lib.getBin cfg.package}/bin/bot";
+        StateDirectory = "xinux-bot";
         StateDirectoryMode = "0750";
         EnvironmentFile = cfg.secret;
 
@@ -113,8 +113,8 @@ in
       };
 
       # preStart = ''
-      #   installedConfigFile="${config.services.xinuxbots.dataDir}/Config/options.json"
-      #   install -d -m750 ${config.services.xinuxbots.dataDir}/Config
+      #   installedConfigFile="${config.services.xinux.bot.dataDir}/Config/options.json"
+      #   install -d -m750 ${config.services.xinux.bot.dataDir}/Config
       #   rm -f "$installedConfigFile" && install -m640 ${configFile} "$installedConfigFile"
       # '';
     };

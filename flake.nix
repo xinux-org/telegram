@@ -37,6 +37,6 @@
     //
     {
       # Overlay module
-      nixosModules.xinuxbots = import ./module.nix self;
+      nixosModules.xinux.bot = import ./module.nix self;
     };
 }

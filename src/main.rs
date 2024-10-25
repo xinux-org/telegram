@@ -1,8 +1,8 @@
+use bot::utils::topics::Topics;
+use bot::{handler, utils::clog};
 use libxinux::pkgs::any::Any as Pkgs;
 use std::error::Error;
 use teloxide::{prelude::*, update_listeners::webhooks};
-use xinuxmgr::utils::topics::Topics;
-use xinuxmgr::{handler, utils::clog};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {

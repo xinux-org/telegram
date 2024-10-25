@@ -13,11 +13,10 @@ let
       -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.SystemConfiguration)}
     '' else "";
   manifest = (pkgs.lib.importTOML ./Cargo.toml).package;
-  binary = (pkgs.lib.importTOML ./bots/xinuxmgr/Cargo.toml).package;
 in
 pkgs.rustPlatform.buildRustPackage {
-  pname = "xinuxmgr";
-  version = binary.version;
+  pname = "bot";
+  version = manifest.version;
   cargoLock.lockFile = ./Cargo.lock;
   src = pkgs.lib.cleanSource ./.;
 
@@ -63,7 +62,7 @@ pkgs.rustPlatform.buildRustPackage {
 
   meta = with lib; {
     homepage = manifest.workspace.package.homepage;
-    description = "Telegram bots for Xinux community";
+    description = "Telegram bot manager for Xinux community";
     license = with lib.licenses; [ gpl3Only ];
 
     platforms = with platforms; linux ++ darwin;
