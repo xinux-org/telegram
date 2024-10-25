@@ -41,11 +41,11 @@ Ushbu bot kontributorlarga rahmatlar bo'lsinki bor va shu odamlar:
 
 ---
 
-> **Muhim Eslatma:** Toki [@orzklv] ruxsat bermas ekan,
+> **Muhim Eslatma:** Toki [orzklv] ruxsat bermas ekan,
 > [(shu proyektni)](https://github.com/xinux-org/telegram) shaxsiy yoki umumiy
 > maqsadlarda ishlatish, hamda ko'chirish taqiqlanadi. Ushbu
 > [litzensiya](license) bo'yicha siz o'zingiz modifikatsion turingiz yasab olish
-> uchun, [@orzklv] ruxsat olishingiz darmoqdir. Ko'proq
+> uchun, [orzklv] ruxsat olishingiz darmoqdir. Ko'proq
 > ma'lumot uchun [litzensiya](license)ni ko'zdan kechiring.
 
 <p align="center">Barcha Huquqlar Himoyalangan &copy; 2020 <a href="https://xinux.uz" target="_blank">Xinux O'zbekiston</a></p>
@@ -53,4 +53,5 @@ Ushbu bot kontributorlarga rahmatlar bo'lsinki bor va shu odamlar:
 <p align="center"><a href="https://github.com/xinux-org/telegram/blob/main/LICENSE"><img src="https://img.shields.io/static/v1.svg?style=flat-square&label=License&message=CC0-1.0&logoColor=eceff4&logo=github&colorA=000000&colorB=ffffff"/></a></p>
 
 
-[@orzklv]: (https://github.com/orzklv)
+[orzklv]: (https://github.com/orzklv)
+[Orzklv]: (https://github.com/orzklv)
