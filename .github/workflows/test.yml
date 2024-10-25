@@ -15,6 +15,9 @@ jobs:
       - name: Cache Nix store
         uses: DeterminateSystems/magic-nix-cache-action@main
 
+      - name: Check for flake configurations
+        run: nix flake check --all-systems --show-trace
+
       - name: Build the project
         run: nix-shell --run "cargo build --release --verbose"
 
