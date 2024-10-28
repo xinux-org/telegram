@@ -126,13 +126,13 @@ in
         }
       ];
 
-      users.users."${cfg.user}" = {
+      users.users.${cfg.user} = {
         description = "Xinux Bot management user";
         isSystemUser = true;
         group = cfg.user;
       };
 
-      users.groups."${cfg.user}" = { };
+      users.groups.${cfg.user} = { };
 
       systemd.services.xinux-bot = {
         description = "Xinux Bot for managing telegram community";
