@@ -87,6 +87,12 @@ in
         '';
       };
 
+      user = mkOption {
+        type = types.str;
+        default = "xinux-bot";
+        description = "User for running system + accessing keys";
+      };
+
       dataDir = mkOption {
         type = types.str;
         default = "/var/lib/xinux/bot ${getMode cfg.webhook.enable} ";
@@ -120,13 +126,13 @@ in
         }
       ];
 
-      users.users.xinux-bot = {
+      users.users."${cfg.user}" = {
         description = "Xinux Bot management user";
         isSystemUser = true;
-        group = "xinux-bot";
+        group = cfg.user;
       };
 
-      users.groups.xinux-bot = { };
+      users.groups."${cfg.user}" = { };
 
       systemd.services.xinux-bot = {
         description = "Xinux Bot for managing telegram community";
@@ -137,11 +143,11 @@ in
         wantedBy = [ "multi-user.target" ];
 
         serviceConfig = {
-          User = "xinux-bot";
-          Group = "xinux-bot";
+          User = cfg.user;
+          Group = cfg.user;
           Restart = "always";
           ExecStart = "${lib.getBin cfg.package}/bin/bot ${genArgs { cfg = cfg; }}";
-          StateDirectory = "xinux-bot";
+          StateDirectory = cfg.user;
           StateDirectoryMode = "0750";
           # EnvironmentFile = cfg.secret;
 
