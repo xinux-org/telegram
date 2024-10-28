@@ -123,9 +123,7 @@ let
 
   asserts = lib.mkIf cfg.enable {
     warnings = [
-      lib.mkIf
-      (cfg.webhook.enable && cfg.webhook.domain == null)
-      ''services.xinux.bot.webhook.domain must be set in order to properly generate certificate!''
+      (lib.mkIf (cfg.webhook.enable && cfg.webhook.domain == null) "services.xinux.bot.webhook.domain must be set in order to properly generate certificate!")
     ];
 
     assertions = [
