@@ -10,8 +10,14 @@ let
   cfg = config.services.xinux.bot;
   bot = flake.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
-  getMode = config:
-    if (cfg.webhook.enable) "webhook" else "polling";
+  genArgs = { cfg }:
+  let
+    mode = if cfg.webhook.enable then "webhook" else "polling";
+    token = cfg.token;
+    port = if cfg.webhook.enable then "--port ${cfg.webhook.port}" else "";
+    domain =  cfg.webhook.domain or "";
+  in
+  builtins.trim lib.strings.intersperse " " [mode token domain port];
 
   caddy = lib.mkIf (cfg.enable && cfg.webhook.enable && cfg.webhook.proxy == "caddy") {
     services.caddy.virtualHosts =
@@ -83,7 +89,7 @@ in
 
       dataDir = mkOption {
         type = types.str;
-        default = "/var/lib/xinux/bot";
+        default = "/var/lib/xinux/bot ${getMode cfg.webhook.enable} ";
         description = lib.mdDoc ''
           The path where Xinux Bot keeps its config, data, and logs.
         '';
@@ -106,6 +112,8 @@ in
         ''services.xinux.bot.webhook.url must be set in order to properly generate certificate!''
     ];
 
+    assertions = [ <CODE> ];
+
     users.users.xinux-bot = {
       description = "Xinux Bot management user";
       isSystemUser = true;
@@ -126,7 +134,7 @@ in
         User = "xinux-bot";
         Group = "xinux-bot";
         Restart = "always";
-        ExecStart = "${lib.getBin cfg.package}/bin/bot";
+        ExecStart = "${lib.getBin cfg.package}/bin/bot ${genArgs { cfg = cfg; }}";
         StateDirectory = "xinux-bot";
         StateDirectoryMode = "0750";
         # EnvironmentFile = cfg.secret;

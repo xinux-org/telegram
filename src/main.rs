@@ -1,6 +1,6 @@
 use bot::bot::dispatch;
 use bot::config::{Config, Field};
-use bot::{bot::handler, utils::clog, utils::topics::Topics};
+use bot::{utils::clog, utils::topics::Topics};
 use bot::{Cli, Commands};
 use clap::Parser;
 use libxinux::pkgs::any::Any as Pkgs;
@@ -39,7 +39,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
             Ok(())
         }
-        Commands::Webhook { token, domain } => {
+        Commands::Webhook {
+            token,
+            domain,
+            port,
+        } => {
             match config.read(token, Field::Token) {
                 Ok(_) => clog("Config", "Successfully read the token variable"),
                 Err(e) => panic!("{}", e),
@@ -53,7 +57,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             let bot = Bot::new(config.token);
             let mut dispatcher = dispatch(&bot, deps);
 
-            let addr = ([0, 0, 0, 0], 8445).into(); // port 8445
+            let addr = ([0, 0, 0, 0], port.unwrap_or(8445)).into(); // port 8445
             let listener = webhooks::axum(
                 bot,
                 webhooks::Options::new(addr, config.domain.parse().unwrap()),
@@ -74,14 +78,19 @@ async fn main() -> Result<(), Box<dyn Error>> {
         }
         Commands::Env => {
             let bot = Bot::from_env();
-
-            // Dispatcher flow control
             let mut dispatcher = dispatch(&bot, deps);
 
             match std::env::var("WEBHOOK_URL") {
                 Ok(v) => {
                     clog("Mode", &format!("starting webhook on {}", v));
-                    let addr = ([0, 0, 0, 0], 8445).into(); // port 8445
+
+                    let port: u16 = std::env::var("PORT")
+                        .unwrap_or("8445".to_string())
+                        .parse()
+                        .unwrap_or(8445);
+
+                    let addr = ([0, 0, 0, 0], port).into();
+
                     let listener =
                         webhooks::axum(bot, webhooks::Options::new(addr, v.parse().unwrap()))
                             .await
