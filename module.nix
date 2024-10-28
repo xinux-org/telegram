@@ -15,7 +15,7 @@ let
       token = cfg.token;
       domain = cfg.webhook.domain or "";
       mode = if cfg.webhook.enable then "webhook" else "polling";
-      port = if cfg.webhook.enable then "--port ${cfg.webhook.port}" else "";
+      port = if cfg.webhook.enable then "--port ${toString cfg.webhook.port}" else "";
     in
     builtins.trim lib.strings.intersperse " " [ mode token domain port ];
 
@@ -24,7 +24,7 @@ let
       lib.debug.traceIf (builtins.isNull cfg.webhook.domain) "webhook.domain can't be null, please specicy it properly!" {
         "${cfg.webhook.domain}" = {
           extraConfig = ''
-            reverse_proxy 127.0.0.1:${cfg.webhook.port}
+            reverse_proxy 127.0.0.1:${toString cfg.webhook.port}
           '';
         };
       };
@@ -37,7 +37,7 @@ let
           addSSL = true;
           enableACME = true;
           locations."/" = {
-            proxyPass = "http://127.0.0.1:${cfg.webhook.port}";
+            proxyPass = "http://127.0.0.1:${toString cfg.webhook.port}";
             proxyWebsockets = true;
           };
         };
