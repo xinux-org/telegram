@@ -112,7 +112,7 @@ in
   };
 
   config = lib.mkIf cfg.enable
-    {
+    ({
       warnings = [
         lib.mkIf
         (cfg.webhook.enable && cfg.webhook.domain == null)
@@ -200,5 +200,5 @@ in
         #   rm -f "$installedConfigFile" && install -m640 ${configFile} "$installedConfigFile"
         # '';
       };
-    } // nginx // caddy;
+    } // nginx // caddy);
 }
