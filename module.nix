@@ -11,37 +11,37 @@ let
   bot = flake.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   genArgs = { cfg }:
-  let
-    mode = if cfg.webhook.enable then "webhook" else "polling";
-    token = cfg.token;
-    port = if cfg.webhook.enable then "--port ${cfg.webhook.port}" else "";
-    domain =  cfg.webhook.domain or "";
-  in
-  builtins.trim lib.strings.intersperse " " [mode token domain port];
+    let
+      token = cfg.token;
+      domain = cfg.webhook.domain or "";
+      mode = if cfg.webhook.enable then "webhook" else "polling";
+      port = if cfg.webhook.enable then "--port ${cfg.webhook.port}" else "";
+    in
+    builtins.trim lib.strings.intersperse " " [ mode token domain port ];
 
   caddy = lib.mkIf (cfg.enable && cfg.webhook.enable && cfg.webhook.proxy == "caddy") {
     services.caddy.virtualHosts =
       lib.debug.traceIf (builtins.isNull cfg.webhook.domain) "webhook.domain can't be null, please specicy it properly!" {
-      "${cfg.webhook.domain}" = {
-        extraConfig = ''
-          reverse_proxy 127.0.0.1:${cfg.webhook.port}
-        '';
+        "${cfg.webhook.domain}" = {
+          extraConfig = ''
+            reverse_proxy 127.0.0.1:${cfg.webhook.port}
+          '';
+        };
       };
-    };
   };
 
   nginx = lib.mkIf (cfg.enable && cfg.webhook.enable && cfg.webhook.proxy == "nginx") {
     services.nginx.virtualHosts =
-    lib.debug.traceIf (builtins.isNull cfg.webhook.domain) "webhook.domain can't be null, please specicy it properly!" {
-      "${cfg.webhook.domain}" = {
-        addSSL = true;
-        enableACME = true;
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:${cfg.webhook.port}";
-          proxyWebsockets = true;
+      lib.debug.traceIf (builtins.isNull cfg.webhook.domain) "webhook.domain can't be null, please specicy it properly!" {
+        "${cfg.webhook.domain}" = {
+          addSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:${cfg.webhook.port}";
+            proxyWebsockets = true;
+          };
         };
       };
-    };
   };
 in
 {
@@ -105,88 +105,89 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    warnings = [
-      lib.mkIf
+  config = lib.mkIf cfg.enable
+    {
+      warnings = [
+        lib.mkIf
         (cfg.webhook.enable && cfg.webhook.url == null)
         ''services.xinux.bot.webhook.url must be set in order to properly generate certificate!''
-    ];
+      ];
 
-    assertions = [ <CODE> ];
+      assertions = [ <CODE> ];
 
-    users.users.xinux-bot = {
-      description = "Xinux Bot management user";
-      isSystemUser = true;
-      group = "xinux-bot";
-    };
-
-    users.groups.xinux-bot = { };
-
-    systemd.services.xinux-bot = {
-      description = "Xinux Bot for managing telegram community";
-      documentation = [ "https://xinux.uz/" ];
-
-      after = [ "network-online.target" ];
-      wants = [ "network-online.target" ];
-      wantedBy = [ "multi-user.target" ];
-
-      serviceConfig = {
-        User = "xinux-bot";
-        Group = "xinux-bot";
-        Restart = "always";
-        ExecStart = "${lib.getBin cfg.package}/bin/bot ${genArgs { cfg = cfg; }}";
-        StateDirectory = "xinux-bot";
-        StateDirectoryMode = "0750";
-        # EnvironmentFile = cfg.secret;
-
-        # Hardening
-        CapabilityBoundingSet = [
-          "AF_NETLINK"
-          "AF_INET"
-          "AF_INET6"
-        ];
-        DeviceAllow = [ "/dev/stdin r" ];
-        DevicePolicy = "strict";
-        IPAddressAllow = "localhost";
-        LockPersonality = true;
-        # MemoryDenyWriteExecute = true;
-        NoNewPrivileges = true;
-        PrivateDevices = true;
-        PrivateTmp = true;
-        PrivateUsers = true;
-        ProtectClock = true;
-        ProtectControlGroups = true;
-        ProtectHome = true;
-        ProtectHostname = true;
-        ProtectKernelLogs = true;
-        ProtectKernelModules = true;
-        ProtectKernelTunables = true;
-        ProtectSystem = "strict";
-        ReadOnlyPaths = [ "/" ];
-        RemoveIPC = true;
-        RestrictAddressFamilies = [
-          "AF_NETLINK"
-          "AF_INET"
-          "AF_INET6"
-        ];
-        RestrictNamespaces = true;
-        RestrictRealtime = true;
-        RestrictSUIDSGID = true;
-        SystemCallArchitectures = "native";
-        SystemCallFilter = [
-          "@system-service"
-          "~@privileged"
-          "~@resources"
-          "@pkey"
-        ];
-        UMask = "0027";
+      users.users.xinux-bot = {
+        description = "Xinux Bot management user";
+        isSystemUser = true;
+        group = "xinux-bot";
       };
 
-      # preStart = ''
-      #   installedConfigFile="${config.services.xinux.bot.dataDir}/Config/options.json"
-      #   install -d -m750 ${config.services.xinux.bot.dataDir}/Config
-      #   rm -f "$installedConfigFile" && install -m640 ${configFile} "$installedConfigFile"
-      # '';
-    };
-  } // nginx // caddy;
+      users.groups.xinux-bot = { };
+
+      systemd.services.xinux-bot = {
+        description = "Xinux Bot for managing telegram community";
+        documentation = [ "https://xinux.uz/" ];
+
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
+        wantedBy = [ "multi-user.target" ];
+
+        serviceConfig = {
+          User = "xinux-bot";
+          Group = "xinux-bot";
+          Restart = "always";
+          ExecStart = "${lib.getBin cfg.package}/bin/bot ${genArgs { cfg = cfg; }}";
+          StateDirectory = "xinux-bot";
+          StateDirectoryMode = "0750";
+          # EnvironmentFile = cfg.secret;
+
+          # Hardening
+          CapabilityBoundingSet = [
+            "AF_NETLINK"
+            "AF_INET"
+            "AF_INET6"
+          ];
+          DeviceAllow = [ "/dev/stdin r" ];
+          DevicePolicy = "strict";
+          IPAddressAllow = "localhost";
+          LockPersonality = true;
+          # MemoryDenyWriteExecute = true;
+          NoNewPrivileges = true;
+          PrivateDevices = true;
+          PrivateTmp = true;
+          PrivateUsers = true;
+          ProtectClock = true;
+          ProtectControlGroups = true;
+          ProtectHome = true;
+          ProtectHostname = true;
+          ProtectKernelLogs = true;
+          ProtectKernelModules = true;
+          ProtectKernelTunables = true;
+          ProtectSystem = "strict";
+          ReadOnlyPaths = [ "/" ];
+          RemoveIPC = true;
+          RestrictAddressFamilies = [
+            "AF_NETLINK"
+            "AF_INET"
+            "AF_INET6"
+          ];
+          RestrictNamespaces = true;
+          RestrictRealtime = true;
+          RestrictSUIDSGID = true;
+          SystemCallArchitectures = "native";
+          SystemCallFilter = [
+            "@system-service"
+            "~@privileged"
+            "~@resources"
+            "@pkey"
+          ];
+          UMask = "0027";
+        };
+
+        # preStart = ''
+        #   installedConfigFile="${config.services.xinux.bot.dataDir}/Config/options.json"
+        #   install -d -m750 ${config.services.xinux.bot.dataDir}/Config
+        #   rm -f "$installedConfigFile" && install -m640 ${configFile} "$installedConfigFile"
+        # '';
+      };
+    } // nginx // caddy;
 }
