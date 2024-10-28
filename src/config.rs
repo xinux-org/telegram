@@ -21,7 +21,7 @@ pub enum Field {
     Domain,
 }
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct Config {
     pub token: String,
     pub domain: String,
@@ -32,10 +32,10 @@ impl Config {
         Self { token, domain }
     }
 
-    pub fn set(&self, data: String, field: Field) -> Result<(), ConfigError> {
+    pub fn set(&mut self, data: String, field: Field) -> Result<(), ConfigError> {
         match field {
-            Token => self.token == data,
-            Domain => self.domain == data,
+            Token => self.token = data,
+            Domain => self.domain = data,
         };
 
         Ok(())
@@ -48,8 +48,8 @@ impl Config {
         };
 
         match field {
-            Token => self.token == data,
-            Domain => self.domain == data,
+            Token => self.token = data,
+            Domain => self.domain = data,
         };
 
         Ok(())
