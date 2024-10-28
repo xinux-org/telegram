@@ -1,22 +1,31 @@
-{ pkgs ? import <nixpkgs> { } }:
+{ pkgs ? import <nixpkgs> { }
+,
+}:
 let
   getLibFolder = pkg: "${pkg}/lib";
   getFramwork = pkg: "${pkg}/Library/Frameworks";
   darwinOptions =
-    if pkgs.stdenv.isDarwin then ''
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.Security)}
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.CoreFoundation)}
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.CoreServices)}
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.SystemConfiguration)}
-    '' else "";
+    if pkgs.stdenv.isDarwin then
+      ''
+        -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.Security)}
+        -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.CoreFoundation)}
+        -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.CoreServices)}
+        -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.SystemConfiguration)}
+      ''
+    else
+      "";
 
   darwinPkgs =
-    if pkgs.stdenv.isDarwin then with pkgs; [
-      darwin.apple_sdk.frameworks.Security
-      darwin.apple_sdk.frameworks.CoreServices
-      darwin.apple_sdk.frameworks.CoreFoundation
-      darwin.apple_sdk.frameworks.SystemConfiguration
-    ] else [ ];
+    if pkgs.stdenv.isDarwin then
+      with pkgs;
+      [
+        darwin.apple_sdk.frameworks.Security
+        darwin.apple_sdk.frameworks.CoreServices
+        darwin.apple_sdk.frameworks.CoreFoundation
+        darwin.apple_sdk.frameworks.SystemConfiguration
+      ]
+    else
+      [ ];
 in
 pkgs.stdenv.mkDerivation {
   name = "xinux-bots";
@@ -33,6 +42,7 @@ pkgs.stdenv.mkDerivation {
     # Hail the Nix
     nixd
     nixpkgs-fmt
+    nixpkgs-lint
 
     # Launch scripts
     just
@@ -45,9 +55,12 @@ pkgs.stdenv.mkDerivation {
     rust-analyzer
   ];
 
-  buildInputs = with pkgs; [
-    openssl
-  ] ++ darwinPkgs;
+  buildInputs =
+    with pkgs;
+    [
+      openssl
+    ]
+    ++ darwinPkgs;
 
   # Set Environment Variables
   RUST_BACKTRACE = 1;

@@ -9,8 +9,8 @@ pub mod warn;
 
 pub use inline::inline;
 
+use crate::bot::Command;
 use crate::utils::topics::Topics;
-use crate::Command;
 use std::error::Error;
 use teloxide::{prelude::*, types::*};
 

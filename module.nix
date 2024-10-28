@@ -9,32 +9,88 @@ flake:
 let
   cfg = config.services.xinux.bot;
   bot = flake.packages.${pkgs.stdenv.hostPlatform.system}.default;
+
+  getMode = config:
+    if (cfg.webhook.enable) "webhook" else "polling";
+
+  caddy = lib.mkIf (cfg.enable && cfg.webhook.enable && cfg.webhook.proxy == "caddy") {
+    services.caddy.virtualHosts =
+      lib.debug.traceIf (builtins.isNull cfg.webhook.domain) "webhook.domain can't be null, please specicy it properly!" {
+      "${cfg.webhook.domain}" = {
+        extraConfig = ''
+          reverse_proxy 127.0.0.1:${cfg.webhook.port}
+        '';
+      };
+    };
+  };
+
+  nginx = lib.mkIf (cfg.enable && cfg.webhook.enable && cfg.webhook.proxy == "nginx") {
+    services.nginx.virtualHosts =
+    lib.debug.traceIf (builtins.isNull cfg.webhook.domain) "webhook.domain can't be null, please specicy it properly!" {
+      "${cfg.webhook.domain}" = {
+        addSSL = true;
+        enableACME = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:${cfg.webhook.port}";
+          proxyWebsockets = true;
+        };
+      };
+    };
+  };
 in
 {
-  options = {
+  options = with lib; {
     services.xinux.bot = {
       enable = lib.mkEnableOption ''
         Xinux Bot: Telegram bot made by Xinux team for Xinux community.
       '';
 
-      dataDir = lib.mkOption {
-        type = lib.types.str;
+      webhook = {
+        enable = mkEnableOption ''
+          Webhook method of deployment
+        '';
+
+        domain = mkOption {
+          types = with types; nullOr str;
+          default = null;
+          example = "xinux.uz";
+          description = "Domain to use while adding configurations to web proxy server";
+        };
+
+        proxy = mkOption {
+          types = with types; nullOr enum [
+            "nginx"
+            "caddy"
+          ];
+          default = "caddy";
+          description = "Proxy reverse software for hosting webhook";
+        };
+
+        port = mkOption {
+          types = types.int;
+          default = 8450;
+          description = "Port to use for passing over proxy";
+        };
+      };
+
+      token = mkOption {
+        type = with types; nullOr path;
+        default = null;
+        description = lib.mdDoc ''
+          Path to telegram bot token of Xinux manager.
+        '';
+      };
+
+      dataDir = mkOption {
+        type = types.str;
         default = "/var/lib/xinux/bot";
         description = lib.mdDoc ''
           The path where Xinux Bot keeps its config, data, and logs.
         '';
       };
 
-      secret = lib.mkOption {
-        type = lib.types.nullOr lib.types.path;
-        default = null;
-        description = ''
-          Path to secret key of Xinux Bot.
-        '';
-      };
-
-      package = lib.mkOption {
-        type = lib.types.package;
+      package = mkOption {
+        type = types.package;
         default = bot;
         description = ''
           The Xinux Bot package to use with the service.
@@ -44,6 +100,12 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    warnings = [
+      lib.mkIf
+        (cfg.webhook.enable && cfg.webhook.url == null)
+        ''services.xinux.bot.webhook.url must be set in order to properly generate certificate!''
+    ];
+
     users.users.xinux-bot = {
       description = "Xinux Bot management user";
       isSystemUser = true;
@@ -67,7 +129,7 @@ in
         ExecStart = "${lib.getBin cfg.package}/bin/bot";
         StateDirectory = "xinux-bot";
         StateDirectoryMode = "0750";
-        EnvironmentFile = cfg.secret;
+        # EnvironmentFile = cfg.secret;
 
         # Hardening
         CapabilityBoundingSet = [
@@ -118,5 +180,5 @@ in
       #   rm -f "$installedConfigFile" && install -m640 ${configFile} "$installedConfigFile"
       # '';
     };
-  };
+  } // nginx // caddy;
 }

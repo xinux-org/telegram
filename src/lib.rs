@@ -1,49 +1,43 @@
 #![allow(clippy::single_match)]
 
+pub mod bot;
+pub mod config;
 pub mod functions;
 pub mod hooks;
 pub mod utils;
 
-use teloxide::{
-    dispatching::{UpdateFilterExt, UpdateHandler},
-    prelude::*,
-    utils::command::BotCommands,
-};
+use clap::{Parser, Subcommand};
+use std::path::PathBuf;
 
-#[derive(BotCommands, Clone, Debug)]
-#[command(rename_rule = "lowercase", parse_with = "split")]
-#[command(description = "These are the commands that I can understand:")]
-pub enum Command {
-    /// List existing commands
-    Help,
-
-    /// Starting point of the bot
-    Start,
-
-    /// Rules of our chat
-    Rules,
-
-    /// About the bot
-    About,
-
-    /// Report offtopic
-    Warn,
-
-    /// Check for chatid
-    Check,
+/// Telegram bot manager for Xinux community
+#[derive(Debug, Parser)]
+#[command(name = "bot")]
+#[command(about = "Telegram bot manager for Xinux community", long_about = None)]
+pub struct Cli {
+    #[command(subcommand)]
+    pub command: Commands,
 }
 
-pub fn handler() -> UpdateHandler<Box<dyn std::error::Error + Send + Sync + 'static>> {
-    dptree::entry()
-        // Inline
-        .branch(Update::filter_inline_query().endpoint(functions::inline))
-        // Callbacks
-        .branch(Update::filter_callback_query().endpoint(functions::callback))
-        // Commands
-        .branch(
-            Update::filter_message()
-                .filter_command::<Command>()
-                .endpoint(functions::commands),
-        )
-        .branch(Update::filter_message().endpoint(functions::triggers))
+#[derive(Debug, Subcommand)]
+pub enum Commands {
+    /// Start bot in Polling mode with token
+    #[command(arg_required_else_help = true)]
+    Polling {
+        /// Telegram bot token
+        #[arg(required = true)]
+        token: PathBuf,
+    },
+    /// Start bot in Webhook mode with given variables
+    #[command(arg_required_else_help = true)]
+    Webhook {
+        /// Telegram bot token
+        #[arg(required = true)]
+        token: PathBuf,
+
+        /// Domain url to set webhook address
+        #[arg(required = true)]
+        domain: String,
+    },
+    /// Start bot by getting necessary configurations from environmental variables
+    Env,
 }

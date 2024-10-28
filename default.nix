@@ -1,17 +1,22 @@
 # For more, refer to:
 # https://github.com/NixOS/nixpkgs/blob/master/doc/languages-frameworks/rust.section.md
-{ pkgs ? import <nixpkgs> { } }:
+{ pkgs ? import <nixpkgs> { }
+,
+}:
 let
   lib = pkgs.lib;
   getLibFolder = pkg: "${pkg}/lib";
   getFramwork = pkg: "${pkg}/Library/Frameworks";
   darwinOptions =
-    if pkgs.stdenv.isDarwin then ''
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.Security)}
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.CoreFoundation)}
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.CoreServices)}
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.SystemConfiguration)}
-    '' else "";
+    if pkgs.stdenv.isDarwin then
+      ''
+        -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.Security)}
+        -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.CoreFoundation)}
+        -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.CoreServices)}
+        -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.SystemConfiguration)}
+      ''
+    else
+      "";
   manifest = (pkgs.lib.importTOML ./Cargo.toml).package;
 in
 pkgs.rustPlatform.buildRustPackage {
@@ -74,9 +79,11 @@ pkgs.rustPlatform.buildRustPackage {
         handle = "orzklv";
         github = "orzklv";
         githubId = 54666588;
-        keys = [{
-          fingerprint = "00D2 7BC6 8707 0683 FBB9  137C 3C35 D3AF 0DA1 D6A8";
-        }];
+        keys = [
+          {
+            fingerprint = "00D2 7BC6 8707 0683 FBB9  137C 3C35 D3AF 0DA1 D6A8";
+          }
+        ];
       }
     ];
   };

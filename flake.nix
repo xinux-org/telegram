@@ -19,23 +19,23 @@
     , ...
     }:
     flake-utils.lib.eachDefaultSystem
-      (system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
-      in
-      {
-        # Nix script formatter
-        formatter = pkgs.nixpkgs-fmt;
+      (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+          # Nix script formatter
+          formatter = pkgs.nixpkgs-fmt;
 
-        # Development environment
-        devShells.default = import ./shell.nix { inherit pkgs; };
+          # Development environment
+          devShells.default = import ./shell.nix { inherit pkgs; };
 
-        # Output package
-        packages.default = pkgs.callPackage ./. { };
-
-      })
-    //
-    {
+          # Output package
+          packages.default = pkgs.callPackage ./. { };
+        }
+      )
+    // {
       # Overlay module
       nixosModules.xinux.bot = import ./module.nix self;
     };
