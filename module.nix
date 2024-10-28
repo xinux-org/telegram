@@ -47,7 +47,7 @@ in
 {
   options = with lib; {
     services.xinux.bot = {
-      enable = lib.mkEnableOption ''
+      enable = mkEnableOption ''
         Xinux Bot: Telegram bot made by Xinux team for Xinux community.
       '';
 
@@ -57,14 +57,14 @@ in
         '';
 
         domain = mkOption {
-          types = with types; nullOr str;
+          type = with types; nullOr str;
           default = null;
           example = "xinux.uz";
           description = "Domain to use while adding configurations to web proxy server";
         };
 
         proxy = mkOption {
-          types = with types; nullOr enum [
+          type = with types; nullOr enum [
             "nginx"
             "caddy"
           ];
@@ -73,7 +73,7 @@ in
         };
 
         port = mkOption {
-          types = types.int;
+          type = types.int;
           default = 8450;
           description = "Port to use for passing over proxy";
         };
@@ -109,11 +109,16 @@ in
     {
       warnings = [
         lib.mkIf
-        (cfg.webhook.enable && cfg.webhook.url == null)
-        ''services.xinux.bot.webhook.url must be set in order to properly generate certificate!''
+        (cfg.webhook.enable && cfg.webhook.domain == null)
+        ''services.xinux.bot.webhook.domain must be set in order to properly generate certificate!''
       ];
 
-      assertions = [ <CODE> ];
+      assertions = [
+        {
+          assertion = cfg.token != null;
+          message = "services.xinux.bot.token must be set!";
+        }
+      ];
 
       users.users.xinux-bot = {
         description = "Xinux Bot management user";
