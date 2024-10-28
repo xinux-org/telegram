@@ -95,7 +95,7 @@ in
 
       dataDir = mkOption {
         type = types.str;
-        default = "/var/lib/xinux/bot ${getMode cfg.webhook.enable} ";
+        default = "/var/lib/xinux/bot";
         description = lib.mdDoc ''
           The path where Xinux Bot keeps its config, data, and logs.
         '';
