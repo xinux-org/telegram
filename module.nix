@@ -43,6 +43,98 @@ let
         };
       };
   };
+
+  service = lib.mkIf cfg.enable {
+    users.users.${cfg.user} = {
+      description = "Xinux Bot management user";
+      isSystemUser = true;
+      group = cfg.group;
+    };
+
+    users.groups.${cfg.group} = { };
+
+    systemd.services.xinux-bot = {
+      description = "Xinux Bot for managing telegram community";
+      documentation = [ "https://xinux.uz/" ];
+
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
+      wantedBy = [ "multi-user.target" ];
+
+      serviceConfig = {
+        User = cfg.user;
+        Group = cfg.group;
+        Restart = "always";
+        ExecStart = "${lib.getBin cfg.package}/bin/bot ${genArgs { cfg = cfg; }}";
+        StateDirectory = cfg.user;
+        StateDirectoryMode = "0750";
+        # EnvironmentFile = cfg.secret;
+
+        # Hardening
+        CapabilityBoundingSet = [
+          "AF_NETLINK"
+          "AF_INET"
+          "AF_INET6"
+        ];
+        DeviceAllow = [ "/dev/stdin r" ];
+        DevicePolicy = "strict";
+        IPAddressAllow = "localhost";
+        LockPersonality = true;
+        # MemoryDenyWriteExecute = true;
+        NoNewPrivileges = true;
+        PrivateDevices = true;
+        PrivateTmp = true;
+        PrivateUsers = true;
+        ProtectClock = true;
+        ProtectControlGroups = true;
+        ProtectHome = true;
+        ProtectHostname = true;
+        ProtectKernelLogs = true;
+        ProtectKernelModules = true;
+        ProtectKernelTunables = true;
+        ProtectSystem = "strict";
+        ReadOnlyPaths = [ "/" ];
+        RemoveIPC = true;
+        RestrictAddressFamilies = [
+          "AF_NETLINK"
+          "AF_INET"
+          "AF_INET6"
+        ];
+        RestrictNamespaces = true;
+        RestrictRealtime = true;
+        RestrictSUIDSGID = true;
+        SystemCallArchitectures = "native";
+        SystemCallFilter = [
+          "@system-service"
+          "~@privileged"
+          "~@resources"
+          "@pkey"
+        ];
+        UMask = "0027";
+      };
+
+      # preStart = ''
+      #   installedConfigFile="${config.services.xinux.bot.dataDir}/Config/options.json"
+      #   install -d -m750 ${config.services.xinux.bot.dataDir}/Config
+      #   rm -f "$installedConfigFile" && install -m640 ${configFile} "$installedConfigFile"
+      # '';
+    };
+  };
+
+  asserts = lib.mkIf cfg.enable {
+    warnings = [
+      lib.mkIf
+      (cfg.webhook.enable && cfg.webhook.domain == null)
+      ''services.xinux.bot.webhook.domain must be set in order to properly generate certificate!''
+    ];
+
+    assertions = [
+      {
+        assertion = cfg.token != null;
+        message = "services.xinux.bot.token must be set!";
+      }
+    ];
+  };
 in
 {
   options = with lib; {
@@ -93,6 +185,12 @@ in
         description = "User for running system + accessing keys";
       };
 
+      group = mkOption {
+        type = types.str;
+        default = "xinux-bot";
+        description = "Group for running system + accessing keys";
+      };
+
       dataDir = mkOption {
         type = types.str;
         default = "/var/lib/xinux/bot";
@@ -111,94 +209,5 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable
-    ({
-      warnings = [
-        lib.mkIf
-        (cfg.webhook.enable && cfg.webhook.domain == null)
-        ''services.xinux.bot.webhook.domain must be set in order to properly generate certificate!''
-      ];
-
-      assertions = [
-        {
-          assertion = cfg.token != null;
-          message = "services.xinux.bot.token must be set!";
-        }
-      ];
-
-      users.users.${cfg.user} = {
-        description = "Xinux Bot management user";
-        isSystemUser = true;
-        group = cfg.user;
-      };
-
-      users.groups.${cfg.user} = { };
-
-      systemd.services.xinux-bot = {
-        description = "Xinux Bot for managing telegram community";
-        documentation = [ "https://xinux.uz/" ];
-
-        after = [ "network-online.target" ];
-        wants = [ "network-online.target" ];
-        wantedBy = [ "multi-user.target" ];
-
-        serviceConfig = {
-          User = cfg.user;
-          Group = cfg.user;
-          Restart = "always";
-          ExecStart = "${lib.getBin cfg.package}/bin/bot ${genArgs { cfg = cfg; }}";
-          StateDirectory = cfg.user;
-          StateDirectoryMode = "0750";
-          # EnvironmentFile = cfg.secret;
-
-          # Hardening
-          CapabilityBoundingSet = [
-            "AF_NETLINK"
-            "AF_INET"
-            "AF_INET6"
-          ];
-          DeviceAllow = [ "/dev/stdin r" ];
-          DevicePolicy = "strict";
-          IPAddressAllow = "localhost";
-          LockPersonality = true;
-          # MemoryDenyWriteExecute = true;
-          NoNewPrivileges = true;
-          PrivateDevices = true;
-          PrivateTmp = true;
-          PrivateUsers = true;
-          ProtectClock = true;
-          ProtectControlGroups = true;
-          ProtectHome = true;
-          ProtectHostname = true;
-          ProtectKernelLogs = true;
-          ProtectKernelModules = true;
-          ProtectKernelTunables = true;
-          ProtectSystem = "strict";
-          ReadOnlyPaths = [ "/" ];
-          RemoveIPC = true;
-          RestrictAddressFamilies = [
-            "AF_NETLINK"
-            "AF_INET"
-            "AF_INET6"
-          ];
-          RestrictNamespaces = true;
-          RestrictRealtime = true;
-          RestrictSUIDSGID = true;
-          SystemCallArchitectures = "native";
-          SystemCallFilter = [
-            "@system-service"
-            "~@privileged"
-            "~@resources"
-            "@pkey"
-          ];
-          UMask = "0027";
-        };
-
-        # preStart = ''
-        #   installedConfigFile="${config.services.xinux.bot.dataDir}/Config/options.json"
-        #   install -d -m750 ${config.services.xinux.bot.dataDir}/Config
-        #   rm -f "$installedConfigFile" && install -m640 ${configFile} "$installedConfigFile"
-        # '';
-      };
-    } // nginx // caddy);
+  config = lib.mkMerge [asserts service caddy nginx];
 }
