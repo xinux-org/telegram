@@ -64,10 +64,10 @@ in
         };
 
         proxy = mkOption {
-          type = with types; nullOr enum [
+          type = with types; nullOr (enum [
             "nginx"
             "caddy"
-          ];
+          ]);
           default = "caddy";
           description = "Proxy reverse software for hosting webhook";
         };
