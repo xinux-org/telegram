@@ -19,8 +19,6 @@ let
     in
     lib.strings.concatStringsSep " " [ mode token domain port ];
 
-  trim = str: lib.strings.removeSuffix " " (lib.strings.removePrefix " " str);
-
   caddy = lib.mkIf (cfg.enable && cfg.webhook.enable && cfg.webhook.proxy == "caddy") {
     services.caddy.virtualHosts =
       lib.debug.traceIf (builtins.isNull cfg.webhook.domain) "webhook.domain can't be null, please specicy it properly!" {
