@@ -17,7 +17,9 @@ let
       mode = if cfg.webhook.enable then "webhook" else "polling";
       port = if cfg.webhook.enable then "--port ${toString cfg.webhook.port}" else "";
     in
-    builtins.trim lib.strings.intersperse " " [ mode token domain port ];
+    lib.strings.concatStringsSep " " [ mode token domain port ];
+
+  trim = str: lib.strings.removeSuffix " " (lib.strings.removePrefix " " str);
 
   caddy = lib.mkIf (cfg.enable && cfg.webhook.enable && cfg.webhook.proxy == "caddy") {
     services.caddy.virtualHosts =
