@@ -226,23 +226,33 @@ pub async fn callback(
         Some(c) => {
             bot.delete_message(message.chat.id, message.id).await?;
 
-            bot.forward_message(message.chat.id, message.chat.id, replied_message)
-                .message_thread_id(ThreadId(MessageId(match i32::try_from(c.clone()) {
-                    Ok(m) => m,
-                    Err(_) => {
-                        return {
-                            bot.send_message_tf(
-                                message.chat.id,
-                                "Xabarni o'chirishdan avval qayerga jo'natishni tushunmadim...",
-                                message,
-                            )
-                            .await?;
+            let parsed_topic = match i32::try_from(c.clone()) {
+                Ok(m) => m,
+                Err(_) => {
+                    return {
+                        bot.send_message_tf(
+                            message.chat.id,
+                            "Xabarni o'chirishdan avval qayerga jo'natishni tushunmadim...",
+                            message,
+                        )
+                        .await?;
 
-                            Ok(())
-                        }
+                        Ok(())
                     }
-                })))
-                .await?;
+                }
+            };
+
+            let forward = bot.forward_message(message.chat.id, message.chat.id, replied_message);
+            match parsed_topic {
+                1 => {
+                    forward.await?;
+                }
+                _ => {
+                    forward
+                        .message_thread_id(ThreadId(MessageId(parsed_topic)))
+                        .await?;
+                }
+            };
 
             // try to delete the replied message
             let attempt = bot.delete_message(message.chat.id, replied_message).await;

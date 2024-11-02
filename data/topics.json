@@ -12,12 +12,16 @@
     "id": 178654
   },
   {
-    "name": "offtopic",
-    "id": 0
+    "name": "learning",
+    "id": 207118
   },
   {
     "name": "nix scripting",
     "id": 180629
+  },
+  {
+    "name": "moderator",
+    "id": 255895
   },
   {
     "name": "devops",
@@ -32,15 +36,15 @@
     "id": 207822
   },
   {
-    "name": "learning",
-    "id": 207118
-  },
-  {
     "name": "fikrlar",
     "id": 258076
   },
   {
-    "name": "moderator",
-    "id": 255895
+    "name": "macos",
+    "id": 336221
+  },
+  {
+    "name": "offtopic",
+    "id": 0
   }
 ]
