@@ -1,3 +1,8 @@
+// Nigga won't let me use cloned instance,
+// but forcefully copy from instance that
+// doesn't fucking implement Copy trait
+#![allow(clippy::clone_on_copy)]
+
 use crate::utils::topics::Topics;
 use orzklv::{
     string::Transform,
@@ -34,10 +39,20 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
         }
     }
 
+    let reply_to = match msg.reply_to_message() {
+        Some(m) => m,
+        None => {
+            return {
+                bot.send_message_tf(msg.chat.id, TEXT_NON_REPLY, msg)
+                    .await?;
+
+                Ok(())
+            }
+        }
+    };
+
     // if there's no replied message, warn
-    if msg.reply_to_message().is_none()
-        || (msg.thread_id.is_some() && (msg.id == msg.reply_to_message().unwrap().id))
-    {
+    if msg.thread_id.is_some() && (msg.id == reply_to.id) {
         return {
             bot.send_message_tf(msg.chat.id, TEXT_NON_REPLY, msg)
                 .await?;
@@ -46,33 +61,18 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
     }
 
     // if replied person is bot itself, send a fail message
-    if let Some(user) = &msg.reply_to_message().as_ref().unwrap().from {
-        if user.username.is_some() && user.username.clone().unwrap() == me.username() {
-            return {
-                bot.send_message_tf(msg.chat.id, TEXT_FAIL, msg).await?;
-                Ok(())
-            };
+    if let Some(user) = &reply_to.from {
+        if let Some(username) = &user.username {
+            if username == me.username() {
+                return {
+                    bot.send_message_tf(msg.chat.id, TEXT_FAIL, msg).await?;
+                    Ok(())
+                };
+            }
         }
     }
 
-    // try to delete the replied message
-    let attempt = bot
-        .delete_message(msg.chat.id, msg.reply_to_message().unwrap().id)
-        .await;
-    match attempt {
-        Ok(_) => {}
-        Err(_) => {
-            bot.send_message_tf(
-                msg.chat.id,
-                "Ebe hay, men habarlar o'chirish uchun yetarlicha imtiyozim yo'q!",
-                msg,
-            )
-            .await?;
-            return Ok(());
-        }
-    }
-
-    let replied_person = match &msg.reply_to_message().unwrap().from {
+    let replied_person = match &reply_to.from {
         None => {
             bot.send_message_tf(
                 msg.chat.id,
@@ -86,23 +86,38 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
         Some(p) => p,
     };
 
+    let from = match &msg.from {
+        None => {
+            bot.send_message_tf(
+                msg.chat.id,
+                "Hmmm, qiziq odam ekan reply qilgan odam...",
+                msg,
+            )
+            .await?;
+
+            return Ok(());
+        }
+        Some(p) => p,
+    };
+
     let conclusion = bot.send_message_tf(
         msg.chat.id,
         format!(
             "<b>Xo'sh, <a href=\"tg://user?id={}\">{}</a>.</b> Qaysi mavzu taraflama yozgan odam chetlashdi?",
-            msg.from.clone().unwrap().id,
-            msg.from.clone().unwrap().first_name
+            from.id,
+            from.first_name
         ),
         msg,
-    ) // view_detail(msg.reply_to_message().unwrap())
-    .parse_mode(ParseMode::Html)
-    .reply_markup(keyboard(
-        topics.list(),
-        msg.from.clone().unwrap().id,
-        &replied_person.id,
-        &replied_person.first_name,
-    ))
-    .await;
+    )
+      .parse_mode(ParseMode::Html)
+      .reply_markup(keyboard(
+          topics.list(),
+          from.id,
+          &replied_person.id,
+          &replied_person.first_name,
+          &reply_to.id
+      ))
+      .await;
 
     match conclusion {
         Ok(_) => {}
@@ -111,16 +126,17 @@ pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> Resp
               msg.chat.id,
               format!(
                 "<b>Xo'sh, <a href=\"tg://user?id={}\">{}</a>.</b> Qaysi mavzu taraflama yozgan odam chetlashdi?",
-                msg.from.clone().unwrap().id,
-                msg.from.clone().unwrap().first_name
+                from.id,
+                from.first_name
               )
             )
             .parse_mode(ParseMode::Html)
             .reply_markup(keyboard(
                 topics.list(),
-                msg.from.clone().unwrap().id,
+                from.id,
                 &replied_person.id,
                 &replied_person.first_name,
+                &reply_to.id // replied message id for deleting & forwarding
             ))
             .await?;
         }
@@ -135,7 +151,38 @@ pub async fn callback(
     args: &[&str],
     topics: &Topics,
 ) -> ResponseResult<()> {
-    if q.from.id != UserId(args[0].parse::<u64>().unwrap()) {
+    let message = match q.regular_message() {
+        Some(m) => m,
+        None => {
+            return {
+                bot.send_message(
+                    ChatId(-1001174263940),
+                    "Qaysidir thread da xabarni tushuna olmadim, akalar meni loglarim qarab ko'rasizlarmi?",
+                )
+                .message_thread_id(ThreadId(MessageId(255895)))
+                .await?;
+
+                Ok(())
+            }
+        }
+    };
+
+    let replied_person = UserId(match args[0].parse::<u64>() {
+        Ok(r) => r,
+        Err(_) => {
+            return {
+                bot.send_message_tf(
+                    message.chat.id,
+                    "Hmmm, qiziq odam ekan reply qilgan odam...",
+                    message,
+                )
+                .await?;
+                Ok(())
+            }
+        }
+    });
+
+    if q.from.id != replied_person {
         bot.answer_callback_query(q.id.clone())
             .text("Sen chaqirmadingku komandani! Nimaga o'z boshimchalik qilayabsan...")
             .show_alert(true)
@@ -147,28 +194,75 @@ pub async fn callback(
 
     let title = args[1];
     let code = topics.get(title);
-    let message = q.message.clone().unwrap();
     let sender = (args[2], args[3]);
+    let replied_message = MessageId(match args[4].parse::<i32>() {
+        Ok(a) => a,
+        Err(_) => {
+            return {
+                bot.send_message_tf(
+                    message.chat.id,
+                    "Reply qilingan xabarni ochib o'qiy olmadim, uzrasizlar-a?",
+                    message,
+                )
+                .await?;
+
+                Ok(())
+            }
+        }
+    });
 
     match code {
         None => {
-            bot.delete_message(message.chat().id, message.id()).await?;
+            bot.delete_message(message.chat.id, message.id).await?;
             bot.send_message_tf(
-                message.chat().id,
+                message.chat.id,
                 "Unaqa topic borga o'xshamaydi do'stlar...",
-                message.regular_message().unwrap(),
+                message,
             )
             .await?;
 
             Ok(())
         }
         Some(c) => {
-            bot.delete_message(message.chat().id, message.id()).await?;
+            bot.delete_message(message.chat.id, message.id).await?;
+
+            bot.forward_message(message.chat.id, message.chat.id, replied_message)
+                .message_thread_id(ThreadId(MessageId(match i32::try_from(c.clone()) {
+                    Ok(m) => m,
+                    Err(_) => {
+                        return {
+                            bot.send_message_tf(
+                                message.chat.id,
+                                "Xabarni o'chirishdan avval qayerga jo'natishni tushunmadim...",
+                                message,
+                            )
+                            .await?;
+
+                            Ok(())
+                        }
+                    }
+                })))
+                .await?;
+
+            // try to delete the replied message
+            let attempt = bot.delete_message(message.chat.id, replied_message).await;
+            match attempt {
+                Ok(_) => {}
+                Err(_) => {
+                    bot.send_message_tf(
+                        message.chat.id,
+                        "Ebe hay, men habarlar o'chirish uchun yetarlicha imtiyozim yo'q!",
+                        message,
+                    )
+                    .await?;
+                    return Ok(());
+                }
+            }
 
             bot.send_message_tf(
-                message.chat().id,
+                message.chat.id,
                 view_detail(sender, title.to_string()),
-                message.regular_message().unwrap(),
+                message,
             )
             .reply_markup(callback_keyboard(title, c))
             .parse_mode(ParseMode::Html)
@@ -201,6 +295,7 @@ pub fn keyboard<T>(
     owner: UserId,
     replied: &UserId,
     name: T,
+    replied_message: &MessageId,
 ) -> InlineKeyboardMarkup
 where
     T: AsRef<str> + Display,
@@ -210,7 +305,10 @@ where
     for (index, topic) in list.iter().enumerate() {
         keyboard.text(
             topic,
-            &format!("warn_{}_{}_{}_{}", owner.0, topic, replied.0, name),
+            &format!(
+                "warn_{}_{}_{}_{}_{}",
+                owner.0, topic, replied.0, name, replied_message
+            ),
         );
 
         if index % 2 == 1 {
@@ -228,7 +326,7 @@ where
     let mut keyboard = Keyboard::new();
 
     let url: String = match topic {
-        0 => "https://t.me/flossuzc/115778".to_string(),
+        0 => "https://t.me/flossuzc".to_string(),
         _ => format!("https://t.me/xinuxuz/{}", topic),
     };
 
