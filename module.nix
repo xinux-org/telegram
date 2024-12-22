@@ -1,47 +1,49 @@
 # Template & Guide from
 # https://github.com/reckenrode/nix-foundryvtt/blob/main/modules/foundryvtt/default.nix
-flake:
-{ config
-, lib
-, pkgs
-, ...
-}:
-let
+flake: {
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   cfg = config.services.xinux.bot;
   bot = flake.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
-  genArgs = { cfg }:
-    let
-      token = cfg.token;
-      domain = cfg.webhook.domain or "";
-      mode = if cfg.webhook.enable then "webhook" else "polling";
-      port = if cfg.webhook.enable then "--port ${toString cfg.webhook.port}" else "";
-    in
-    lib.strings.concatStringsSep " " [ mode token domain port ];
+  genArgs = {cfg}: let
+    token = cfg.token;
+    domain = cfg.webhook.domain or "";
+    mode =
+      if cfg.webhook.enable
+      then "webhook"
+      else "polling";
+    port =
+      if cfg.webhook.enable
+      then "--port ${toString cfg.webhook.port}"
+      else "";
+  in
+    lib.strings.concatStringsSep " " [mode token domain port];
 
   caddy = lib.mkIf (cfg.enable && cfg.webhook.enable && cfg.webhook.proxy == "caddy") {
-    services.caddy.virtualHosts =
-      lib.debug.traceIf (builtins.isNull cfg.webhook.domain) "webhook.domain can't be null, please specicy it properly!" {
-        "${cfg.webhook.domain}" = {
-          extraConfig = ''
-            reverse_proxy 127.0.0.1:${toString cfg.webhook.port}
-          '';
-        };
+    services.caddy.virtualHosts = lib.debug.traceIf (builtins.isNull cfg.webhook.domain) "webhook.domain can't be null, please specicy it properly!" {
+      "${cfg.webhook.domain}" = {
+        extraConfig = ''
+          reverse_proxy 127.0.0.1:${toString cfg.webhook.port}
+        '';
       };
+    };
   };
 
   nginx = lib.mkIf (cfg.enable && cfg.webhook.enable && cfg.webhook.proxy == "nginx") {
-    services.nginx.virtualHosts =
-      lib.debug.traceIf (builtins.isNull cfg.webhook.domain) "webhook.domain can't be null, please specicy it properly!" {
-        "${cfg.webhook.domain}" = {
-          addSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://127.0.0.1:${toString cfg.webhook.port}";
-            proxyWebsockets = true;
-          };
+    services.nginx.virtualHosts = lib.debug.traceIf (builtins.isNull cfg.webhook.domain) "webhook.domain can't be null, please specicy it properly!" {
+      "${cfg.webhook.domain}" = {
+        addSSL = true;
+        enableACME = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:${toString cfg.webhook.port}";
+          proxyWebsockets = true;
         };
       };
+    };
   };
 
   service = lib.mkIf cfg.enable {
@@ -51,21 +53,21 @@ let
       group = cfg.group;
     };
 
-    users.groups.${cfg.group} = { };
+    users.groups.${cfg.group} = {};
 
     systemd.services.xinux-bot = {
       description = "Xinux Bot for managing telegram community";
-      documentation = [ "https://xinux.uz/" ];
+      documentation = ["https://xinux.uz/"];
 
-      after = [ "network-online.target" ];
-      wants = [ "network-online.target" ];
-      wantedBy = [ "multi-user.target" ];
+      after = ["network-online.target"];
+      wants = ["network-online.target"];
+      wantedBy = ["multi-user.target"];
 
       serviceConfig = {
         User = cfg.user;
         Group = cfg.group;
         Restart = "always";
-        ExecStart = "${lib.getBin cfg.package}/bin/bot ${genArgs { cfg = cfg; }}";
+        ExecStart = "${lib.getBin cfg.package}/bin/bot ${genArgs {cfg = cfg;}}";
         StateDirectory = cfg.user;
         StateDirectoryMode = "0750";
         # EnvironmentFile = cfg.secret;
@@ -76,7 +78,7 @@ let
           "AF_INET"
           "AF_INET6"
         ];
-        DeviceAllow = [ "/dev/stdin r" ];
+        DeviceAllow = ["/dev/stdin r"];
         DevicePolicy = "strict";
         IPAddressAllow = "localhost";
         LockPersonality = true;
@@ -93,7 +95,7 @@ let
         ProtectKernelModules = true;
         ProtectKernelTunables = true;
         ProtectSystem = "strict";
-        ReadOnlyPaths = [ "/" ];
+        ReadOnlyPaths = ["/"];
         RemoveIPC = true;
         RestrictAddressFamilies = [
           "AF_NETLINK"
@@ -133,8 +135,7 @@ let
       }
     ];
   };
-in
-{
+in {
   options = with lib; {
     services.xinux.bot = {
       enable = mkEnableOption ''
@@ -154,10 +155,11 @@ in
         };
 
         proxy = mkOption {
-          type = with types; nullOr (enum [
-            "nginx"
-            "caddy"
-          ]);
+          type = with types;
+            nullOr (enum [
+              "nginx"
+              "caddy"
+            ]);
           default = "caddy";
           description = "Proxy reverse software for hosting webhook";
         };

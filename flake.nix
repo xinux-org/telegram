@@ -12,29 +12,27 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs =
-    { self
-    , nixpkgs
-    , flake-utils
-    , ...
-    }:
+  outputs = {
+    self,
+    nixpkgs,
+    flake-utils,
+    ...
+  }:
     flake-utils.lib.eachDefaultSystem
-      (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          # Nix script formatter
-          formatter = pkgs.nixpkgs-fmt;
+    (
+      system: let
+        pkgs = nixpkgs.legacyPackages.${system};
+      in {
+        # Nix script formatter
+        formatter = pkgs.alejandra;
 
-          # Development environment
-          devShells.default = import ./shell.nix { inherit pkgs; };
+        # Development environment
+        devShells.default = import ./shell.nix {inherit pkgs;};
 
-          # Output package
-          packages.default = pkgs.callPackage ./. { };
-        }
-      )
+        # Output package
+        packages.default = pkgs.callPackage ./. {};
+      }
+    )
     // {
       # Overlay module
       nixosModules.xinux.bot = import ./module.nix self;
