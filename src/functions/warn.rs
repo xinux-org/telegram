@@ -337,7 +337,7 @@ where
 
     let url: String = match topic {
         0 => "https://t.me/flossuzc".to_string(),
-        _ => format!("https://t.me/xinuxuz/{}", topic),
+        _ => format!("https://t.me/xinux/{}", topic),
     };
 
     keyboard

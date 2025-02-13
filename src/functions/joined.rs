@@ -11,7 +11,7 @@ Ushbu guruhda esa Linux ga oid istagan mavzuda gaplashish, \
 ma'lumot yoki tajriba ulashish mumkin.
 
 Agar siz bu yerlarga yordam axtarib kelgan bo'lsangiz, \
-<a href=\"https://t.me/xinuxuz/178646\">yordam kanali</a> \
+<a href=\"https://t.me/xinux/178646\">yordam kanali</a> \
 ga muroojat qilishingizni so'rab qolamiz. Hamda, qoidalarni \
 /rules buyrug'i orqali o'qib olish esingizdan chiqmasin. \
 Keyin yana adminlar jazolashsa hayron bo'lib yurmang!
