@@ -1,4 +1,4 @@
-<p align="center"><a href="https://t.me/xinuxuz" target="_blank"><img height="300" width="300" src="./.github/assets/logo.svg"/></a></p>
+<p align="center"><a href="https://t.me/xinux" target="_blank"><img height="300" width="300" src="./.github/assets/logo.svg"/></a></p>
 
 <h2 align="center">Xinux Telegram Botlari (RIIR)</h2>
 
@@ -8,12 +8,12 @@
   </a>
 </p>
 
-<p align="center"><a href="https://t.me/s/xinuxuz" target="_blank">Xinux O'zbekiston</a> jamiyati uchun Telegram bot.</p>
+<p align="center"><a href="https://t.me/s/xinux" target="_blank">Xinux O'zbekiston</a> jamiyati uchun Telegram bot.</p>
 
 **Ushbu botlar [teloxide](https://github.com/teloxide/teloxide) kutubxonasi bilan
 qurilgan hisoblanib, unda [Rust](https://www.rust-lang.org) dasturlash tili ushbu
 botni kompilyatsiya qilish va ishga tushurish uchun qo'llaniladi. Botlar modulyar
-sxemada  qurilgan hisoblanib, unga yangi plagin va modullar qo'shish hech qanday
+sxemada qurilgan hisoblanib, unga yangi plagin va modullar qo'shish hech qanday
 muammo tug'dirmaydi va bu botlarning ishlash tezligi va sifatiga mutlaqo ta'sir
 qilmaydi.**
 
@@ -51,7 +51,6 @@ Ushbu bot kontributorlarga rahmatlar bo'lsinki bor va shu odamlar:
 <p align="center">Barcha Huquqlar Himoyalangan &copy; 2020 <a href="https://xinux.uz" target="_blank">Xinux O'zbekiston</a></p>
 
 <p align="center"><a href="https://github.com/xinux-org/telegram/blob/main/LICENSE"><img src="https://img.shields.io/static/v1.svg?style=flat-square&label=License&message=CC0-1.0&logoColor=eceff4&logo=github&colorA=000000&colorB=ffffff"/></a></p>
-
 
 [orzklv]: (https://github.com/orzklv)
 [Orzklv]: (https://github.com/orzklv)

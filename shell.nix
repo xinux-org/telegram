@@ -1,28 +1,9 @@
 {pkgs ? import <nixpkgs> {}}: let
   getLibFolder = pkg: "${pkg}/lib";
-  getFramwork = pkg: "${pkg}/Library/Frameworks";
-  darwinOptions =
-    if pkgs.stdenv.isDarwin
-    then ''
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.Security)}
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.CoreFoundation)}
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.CoreServices)}
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.SystemConfiguration)}
-    ''
-    else "";
-
-  darwinPkgs =
-    if pkgs.stdenv.isDarwin
-    then with pkgs; [
-      darwin.apple_sdk.frameworks.Security
-      darwin.apple_sdk.frameworks.CoreServices
-      darwin.apple_sdk.frameworks.CoreFoundation
-      darwin.apple_sdk.frameworks.SystemConfiguration
-    ]
-    else [];
+  manifest = (pkgs.lib.importTOML ./Cargo.toml).package;
 in
   pkgs.stdenv.mkDerivation {
-    name = "xinux-bots";
+    name = manifest.name;
 
     nativeBuildInputs = with pkgs; [
       # LLVM & GCC
@@ -35,8 +16,9 @@ in
 
       # Hail the Nix
       nixd
-      nixpkgs-fmt
-      nixpkgs-lint
+      alejandra
+      statix
+      deadnix
 
       # Launch scripts
       just
@@ -45,24 +27,23 @@ in
       rustc
       cargo
       clippy
+      rustfmt
       cargo-watch
       rust-analyzer
     ];
 
-    buildInputs = with pkgs;
-      [
+    buildInputs = with pkgs; [
         openssl
-      ]
-      ++ darwinPkgs;
+      ];
 
     # Set Environment Variables
     RUST_BACKTRACE = 1;
-    NIX_LDFLAGS = "-L${(getLibFolder pkgs.libiconv)} ${darwinOptions}";
+    NIX_LDFLAGS = "-L${(getLibFolder pkgs.libiconv)}";
     RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
     LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
-      (getLibFolder pkgs.gcc)
-      (getLibFolder pkgs.libiconv)
-      (getLibFolder pkgs.llvmPackages.llvm)
+      pkgs.gcc
+       pkgs.libiconv
+       pkgs.llvmPackages.llvm
     ];
 
     shellHook = ''

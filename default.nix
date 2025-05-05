@@ -3,84 +3,49 @@
 {pkgs ? import <nixpkgs> {}}: let
   lib = pkgs.lib;
   getLibFolder = pkg: "${pkg}/lib";
-  getFramwork = pkg: "${pkg}/Library/Frameworks";
-  darwinOptions =
-    if pkgs.stdenv.isDarwin
-    then ''
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.Security)}
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.CoreFoundation)}
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.CoreServices)}
-      -F${(getFramwork pkgs.darwin.apple_sdk.frameworks.SystemConfiguration)}
-    ''
-    else "";
   manifest = (pkgs.lib.importTOML ./Cargo.toml).package;
 in
   pkgs.rustPlatform.buildRustPackage {
-    pname = "bot";
+    pname = manifest.name;
     version = manifest.version;
     cargoLock.lockFile = ./Cargo.lock;
     src = pkgs.lib.cleanSource ./.;
 
     nativeBuildInputs = with pkgs; [
-      gcc
-      nixd
+      # Rust
       rustc
       cargo
+
+      # LLVM & GCC
+      gcc
       cmake
-      clippy
       gnumake
-      libiconv
-      cargo-watch
       pkg-config
-      nixpkgs-fmt
-      rust-analyzer
       llvmPackages.llvm
       llvmPackages.clang
     ];
 
-    # Having hard times nix running from macOS 15 Beta?
-    # add these to your buildInputs:
-    # darwin.apple_sdk.frameworks.Security
-    # darwin.apple_sdk.frameworks.CoreServices
-    # darwin.apple_sdk.frameworks.CoreFoundation
-    # darwin.apple_sdk.frameworks.SystemConfiguration
     buildInputs = with pkgs; [
       openssl
       libressl
     ];
 
     LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
-      (getLibFolder pkgs.gcc)
-      (getLibFolder pkgs.libiconv)
-      (getLibFolder pkgs.llvmPackages.llvm)
+       pkgs.gcc
+       pkgs.libiconv
+       pkgs.llvmPackages.llvm
     ];
 
-    RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
-    NIX_LDFLAGS = "-L${(getLibFolder pkgs.libiconv)} ${darwinOptions}";
-
     # If you wanna get thorny
-    # RUST_BACKTRACE = 1;
+    RUST_BACKTRACE = 1;
+    RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
+    NIX_LDFLAGS = "-L${(getLibFolder pkgs.libiconv)}";
 
     meta = with lib; {
-      homepage = manifest.workspace.package.homepage;
-      description = "Telegram bot manager for Xinux community";
+      homepage = manifest.homepage;
+      description = manifest.description;
       license = with lib.licenses; [gpl3Only];
-
       platforms = with platforms; linux ++ darwin;
-
-      maintainers = [
-        {
-          name = "Sokhibjon Orzikulov";
-          email = "sakhib@orzklv.uz";
-          handle = "orzklv";
-          github = "orzklv";
-          githubId = 54666588;
-          keys = [
-            {
-              fingerprint = "00D2 7BC6 8707 0683 FBB9  137C 3C35 D3AF 0DA1 D6A8";
-            }
-          ];
-        }
-      ];
+      maintainers = [lib.maintainers.orzklv];
     };
   }

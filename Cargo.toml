@@ -1,5 +1,6 @@
 [package]
 name = "bot"
+description = "Telegram bot manager for Xinux community"
 version = "0.1.0"
 edition = "2021"
 license = "GPL-3"
@@ -9,7 +10,7 @@ repository = "https://github.com/xinux-org/telegram"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-teloxide = { version = "0.13", features = [
+teloxide = { version = "0.15", features = [
   "macros",
   "webhooks",
   "webhooks-axum",
@@ -17,14 +18,13 @@ teloxide = { version = "0.13", features = [
 log = "0.4"
 pretty_env_logger = "0.5"
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
-url = "2.4.1"
-uuid = { version = "1.5.0", features = ["v4"] }
+url = "2"
+uuid = { version = "1", features = ["v4"] }
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
-orzklv = { version = "0.1.8", features = ["full"] }
+orzklv = { version = "0.1.9", features = ["full"] }
 libxinux = { version = "0.2.3", features = ["pkgs-async"] }
-clap = { version = "4.5.20", features = ["derive"] }
-
+clap = { version = "4", features = ["derive"] }
 
 [profile.release]
 strip = true

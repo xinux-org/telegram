@@ -42,10 +42,7 @@ impl Config {
     }
 
     pub fn read(&mut self, path: PathBuf, field: Field) -> Result<(), ConfigError> {
-        let data = match self.parse_file(path) {
-            Ok(d) => d,
-            Err(e) => return Err(e),
-        };
+        let data = self.parse_file(path)?;
 
         match field {
             Token => self.token = data,

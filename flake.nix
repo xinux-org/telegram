@@ -3,7 +3,7 @@
 
   inputs = {
     # Too old to work with most libraries
-    # nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
 
     # Perfect!
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
