@@ -15,6 +15,8 @@ static TEXT_FAIL: &str = "Ha-ha... yaxshi urinish!";
 static TEXT_NON_REPLY: &str = "↪ Reply bilan ko'rsatingchi habarni!";
 static NON_XINUX: &str = "Ebe hay, biz Xinux guruhida emasga o'xshaymiz...";
 
+static FLOSS_CHAT: &str = "-1001303954475";
+
 pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> ResponseResult<()> {
     // if chat is not xinux, delete
     if msg.chat.id != ChatId(-1001174263940) {
@@ -242,9 +244,15 @@ pub async fn callback(
                 }
             };
 
-            let forward = bot.forward_message(message.chat.id, message.chat.id, replied_message);
+            // select where to forward message
+            let forward = match c {
+                0 => bot.forward_message(FLOSS_CHAT.to_string(), message.chat.id, replied_message),
+                _ => bot.forward_message(message.chat.id, message.chat.id, replied_message),
+            };
+
+            // if it has topic, appoint it
             match parsed_topic {
-                1 => {
+                0..1 => {
                     forward.await?;
                 }
                 _ => {
