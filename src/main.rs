@@ -1,6 +1,6 @@
 use bot::bot::dispatch;
 use bot::config::{Config, Field};
-use bot::{utils::clog, utils::topics::Topics};
+use bot::utils::{clog, resources::Resources, topics::Topics};
 use bot::{Cli, Commands};
 use clap::Parser;
 use libxinux::pkgs::any::Any as Pkgs;
@@ -17,9 +17,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let topics = Topics::new();
     let pkgs = Pkgs::new().unwrap();
     let mut config = Config::default();
+    let resources = Resources::new();
 
     // Dependencies
-    let deps = dptree::deps![topics, pkgs];
+    let deps = dptree::deps![topics, pkgs, resources];
 
     // Args
     let args = Cli::parse();

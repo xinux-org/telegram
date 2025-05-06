@@ -11,10 +11,9 @@ static TEXT: &[(&str, &str)] = &[
     ("rules", "qoidalarni aks ettirish"),
     ("check", "chaqirilgan joydan parametrlarni ko'rish"),
     ("about", "ushbu botimizning rivojlantirish qismi"),
-    (
-        "warn",
-        "reply qilingan odamga offtop borligi haqida eslatish",
-    ),
+    ("roadmap", "boshlang'ich o'rganuvchilar uchun"),
+    ("useful", "xinux haqida foydali yoki kerakli ma'lumotlar"),
+    ("warn", "mavzudan chetlashganga ogohlantiruv"),
 ];
 
 pub async fn command(bot: &Bot, msg: &Message, _cmd: &Command) -> ResponseResult<()> {

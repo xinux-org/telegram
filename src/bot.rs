@@ -24,6 +24,12 @@ pub enum Command {
     /// Report offtopic
     Warn,
 
+    /// Useful resources
+    Useful,
+
+    /// Roadmap for newbies,
+    Roadmap,
+
     /// Check for chatid
     Check,
 }

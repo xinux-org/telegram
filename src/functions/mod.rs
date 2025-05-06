@@ -3,14 +3,16 @@ pub mod check;
 pub mod help;
 pub mod inline;
 pub mod joined;
+pub mod roadmap;
 pub mod rules;
 pub mod start;
+pub mod useful;
 pub mod warn;
 
 pub use inline::inline;
 
 use crate::bot::Command;
-use crate::utils::topics::Topics;
+use crate::utils::{resources::Resources, topics::Topics};
 use std::error::Error;
 use teloxide::{prelude::*, types::*};
 
@@ -20,6 +22,7 @@ pub async fn commands(
     msg: Message,
     cmd: Command,
     topics: Topics,
+    resources: Resources,
 ) -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
     let _ = match cmd {
         Command::Start => crate::functions::start::command(&bot, &msg).await,
@@ -28,6 +31,8 @@ pub async fn commands(
         Command::About => crate::functions::about::command(&bot, &msg).await,
         Command::Warn => crate::functions::warn::command(&bot, &msg, &me, &topics).await,
         Command::Check => crate::functions::check::command(&bot, &msg).await,
+        Command::Useful => crate::functions::useful::command(&bot, &msg, &resources).await,
+        Command::Roadmap => crate::functions::roadmap::command(&bot, &msg).await,
     };
 
     Ok(())
@@ -37,6 +42,7 @@ pub async fn callback(
     bot: Bot,
     q: CallbackQuery,
     topics: Topics,
+    resources: Resources,
 ) -> Result<(), Box<dyn Error + Send + Sync>> {
     let mut args: Vec<&str> = Vec::new();
 
@@ -48,6 +54,14 @@ pub async fn callback(
         }
 
         let _ = match args.remove(0) {
+            "useful" => crate::functions::useful::callback_list(&bot, &q, &resources).await,
+            "category" => {
+                crate::functions::useful::callback_category_list(&bot, &q, &args, &resources).await
+            }
+            "material" => {
+                crate::functions::useful::callback_material_detail(&bot, &q, &args, &resources)
+                    .await
+            }
             "warn" => warn::callback(&bot, &q, &args, &topics).await,
             _ => Ok(()),
         };

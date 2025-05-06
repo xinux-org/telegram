@@ -1,0 +1,97 @@
+{
+  "qo'llanma": [
+    {
+      "name": "Nix(OS) installing and intro manuals",
+      "desc": "Eng boshlang'ich nix ga rajmiy tashkilotdan taqdim etilgan manbalar",
+      "link": "https://nixos.org/learn/"
+    },
+    {
+      "name": "Zero to Nix",
+      "desc": "0 dan Nix gacha nomli chuqur va ma'lumotlarga to'la qo'llanma",
+      "link": "https://zero-to-nix.com/"
+    },
+    {
+      "name": "Nix Pills",
+      "desc": "Luca Bruno ning Nix(OS) haqida yozgan tavsilotlari",
+      "link": "https://nixos.org/guides/nix-pills/"
+    },
+    {
+      "name": "NixOS Wiki",
+      "desc": "NixOs/Nix/nixpkgs haqida o'ta chuqur ma'lumot manbayi",
+      "link": "https://nixos.wiki"
+    },
+    {
+      "name": "Overview of the Nix Language",
+      "desc": "Nix tili haqida ko'plab tavsilotlar to'plami",
+      "link": "https://nixos.wiki/wiki/Overview_of_the_Nix_Language"
+    },
+    {
+      "name": "Nixcloud (Tour of the Nix Language)",
+      "desc": "Nix tilida nixcloud.io bilan birgalikda sayohat va sarguzashtlar",
+      "link": "https://nixcloud.io/tour"
+    },
+    {
+      "name": "NixOS blog series by Lan Tian",
+      "desc": "Lan Tian tomonidan yozilgan bir necha voqeiylikga ega Nix haqidagi post to'plamlari",
+      "link": "https://lantian.pub/en/article/modify-website/nixos-why.lantian/"
+    }
+  ],
+  "podkastlar": [
+    {
+      "name": "Full Time Nix",
+      "desc": "Shahar ning NixOS dagi sarguzashtlari bilan birga madaniy hordiq oling",
+      "link": "https://fulltimenix.com"
+    }
+  ],
+  "kitoblar": [
+    {
+      "name": "NixOS in Production",
+      "desc": "Gabriela o'z tajribalaridan kelib chiqib NixOS production dagi tajribalarini yozgan kitob",
+      "link": "https://leanpub.com/nixos-in-production"
+    },
+    {
+      "name": "Wombat's Book of Nix",
+      "desc": "Wombatning Nix haqida yozgan chuqur tavsilotlari",
+      "link": "https://mhwombat.codeberg.page/nix-book/"
+    }
+  ],
+  "videolar": [
+    {
+      "name": "NixOS Explained",
+      "desc": "NixOS qisqachasiga Vimjoyer tomonidan tushuntirilgani",
+      "link": "https://www.youtube.com/watch?v=9OMDnZWXjn4"
+    },
+    {
+      "name": "Nixology by Burke Libbey",
+      "desc": "Nix haqida Burke Libbey tomonidan yozilgan Niksologiya videosi",
+      "link": "https://www.youtube.com/playlist?list=PLRGI9KQ3_HP_OFRG6R-p4iFgMSK1t5BHs"
+    },
+    {
+      "name": "Nix in 100 seconds",
+      "desc": "Nix 100 soniya ichida tushuntirilgan video lavha",
+      "link": "https://www.youtube.com/watch?v=FJVFXsNzYZQ"
+    },
+    {
+      "name": "NixOS, Nixpkgs, Flakes, home-manager",
+      "desc": "NixOS haqida batafsil Ampersand tomonidan yozilgan video tavsilot",
+      "link": "https://www.youtube.com/watch?v=HOq7XTygAAU"
+    }
+  ],
+  "ko'proq": [
+    {
+      "name": "Weekly NixOS",
+      "desc": "Har haftalik NixOS da bo'layotgan yangiliklar to'plami",
+      "link": "https://weekly.nixos.org"
+    },
+    {
+      "name": "NixOS Planet",
+      "desc": "NixOS haqida aralash quralash har xil shakldagi lavhalar",
+      "link": "https://planet.nixos.org"
+    },
+    {
+      "name": "Awesome Nix",
+      "desc": "NixOS uchun yozilgan Awesome to'plami",
+      "link": "https://github.com/nix-community/awesome-nix"
+    }
+  ]
+}

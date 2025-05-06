@@ -13,15 +13,16 @@ use teloxide::{prelude::*, types::*};
 
 static TEXT_FAIL: &str = "Ha-ha... yaxshi urinish!";
 static TEXT_NON_REPLY: &str = "↪ Reply bilan ko'rsatingchi habarni!";
-static NON_XINUX: &str = "Ebe hay, biz Xinux guruhida emasga o'xshaymiz...";
+static NON_COMMUNITY: &str = "Ebe hay, biz Xinux guruhida emasga o'xshaymiz...";
 
-static FLOSS_CHAT: &str = "-1001303954475";
+static FLOSS_CHAT: ChatId = ChatId(-1001303954475);
+static XINUX_CHAT: ChatId = ChatId(-1001174263940);
 
 pub async fn command(bot: &Bot, msg: &Message, me: &Me, topics: &Topics) -> ResponseResult<()> {
-    // if chat is not xinux, delete
-    if msg.chat.id != ChatId(-1001174263940) {
+    // if chat is not community, delete
+    if msg.chat.id != XINUX_CHAT {
         return {
-            bot.send_message_tf(msg.chat.id, NON_XINUX, msg).await?;
+            bot.send_message_tf(msg.chat.id, NON_COMMUNITY, msg).await?;
             Ok(())
         };
     }
@@ -158,7 +159,7 @@ pub async fn callback(
         None => {
             return {
                 bot.send_message(
-                    ChatId(-1001174263940),
+                    XINUX_CHAT,
                     "Qaysidir thread da xabarni tushuna olmadim, akalar meni loglarim qarab ko'rasizlarmi?",
                 )
                 .message_thread_id(ThreadId(MessageId(255895)))

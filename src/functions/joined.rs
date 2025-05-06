@@ -8,7 +8,11 @@ Xinux Jamiyati tomonidan yaratilgan bot hisoblanib, \
 Xinux Jamiyati foydalanuvchilari uchun foydali resurslarni \
 yetkazish, saqlash va ularni saralash uchun xizmat qilaman. \
 Ushbu guruhda esa Linux ga oid istagan mavzuda gaplashish, \
-ma'lumot yoki tajriba ulashish mumkin.
+ma'lumot yoki tajriba ulashish mumkin. Hamda, agar siz
+NixOS, Nix yoki nixpkgs linux distributivida butunlay yangi \
+bo'lsangiz, /roadmap yordamida kerakli boshlang'ich \
+maslahatlar, va hamda /useful yordamoda foydali resurslar \
+olishingiz mumkin.
 
 Agar siz bu yerlarga yordam axtarib kelgan bo'lsangiz, \
 <a href=\"https://t.me/xinux/178646\">yordam kanali</a> \
