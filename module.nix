@@ -174,7 +174,7 @@ in {
       token = mkOption {
         type = with types; nullOr path;
         default = null;
-        description = lib.mdDoc ''
+        description = ''
           Path to telegram bot token of Xinux manager.
         '';
       };
@@ -194,7 +194,7 @@ in {
       dataDir = mkOption {
         type = types.str;
         default = "/var/lib/xinux/bot";
-        description = lib.mdDoc ''
+        description = ''
           The path where Xinux Bot keeps its config, data, and logs.
         '';
       };
