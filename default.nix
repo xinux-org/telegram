@@ -15,14 +15,7 @@ in
       # Rust
       rustc
       cargo
-
-      # LLVM & GCC
-      gcc
-      cmake
-      gnumake
       pkg-config
-      llvmPackages.llvm
-      llvmPackages.clang
     ];
 
     buildInputs = with pkgs; [
@@ -31,9 +24,7 @@ in
     ];
 
     LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
-       pkgs.gcc
-       pkgs.libiconv
-       pkgs.llvmPackages.llvm
+      pkgs.libiconv
     ];
 
     # If you wanna get thorny

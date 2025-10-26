@@ -6,14 +6,6 @@ in
     name = manifest.name;
 
     nativeBuildInputs = with pkgs; [
-      # LLVM & GCC
-      gcc
-      cmake
-      gnumake
-      pkg-config
-      llvmPackages.llvm
-      llvmPackages.clang
-
       # Hail the Nix
       nixd
       alejandra
@@ -24,6 +16,7 @@ in
       just
 
       # Rust
+      pkg-config
       rustc
       cargo
       clippy
@@ -33,17 +26,15 @@ in
     ];
 
     buildInputs = with pkgs; [
-        openssl
-      ];
+      openssl
+    ];
 
     # Set Environment Variables
     RUST_BACKTRACE = 1;
     NIX_LDFLAGS = "-L${(getLibFolder pkgs.libiconv)}";
     RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
     LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
-      pkgs.gcc
-       pkgs.libiconv
-       pkgs.llvmPackages.llvm
+      pkgs.libiconv
     ];
 
     shellHook = ''
