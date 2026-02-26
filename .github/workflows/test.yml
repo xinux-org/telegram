@@ -4,16 +4,10 @@ on: [push, pull_request]
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Clone the repository
-        uses: actions/checkout@v4
-
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@main
-
-      - name: Cache Nix store
-        uses: DeterminateSystems/magic-nix-cache-action@main
+        uses: actions/checkout@v6
 
       - name: Check for flake configurations
         run: nix flake check --all-systems --show-trace
@@ -31,4 +25,4 @@ jobs:
         run: nix-shell --run "cargo test --verbose"
 
       - name: Build nix package
-        run: nix build .
+        run: nix build . --show-trace
