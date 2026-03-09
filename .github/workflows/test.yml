@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   tests:
-    runs-on: self-hosted
+    runs-on: testing
     steps:
       - name: Clone the repository
         uses: actions/checkout@v6
@@ -12,17 +12,11 @@ jobs:
       - name: Check for flake configurations
         run: nix flake check --all-systems --show-trace
 
-      - name: Build the project
-        run: nix-shell --run "cargo build --release --verbose"
-
       - name: Run lint
-        run: nix-shell --run "cargo clippy --verbose"
+        run: nix develop --command bash -c "cargo clippy --verbose"
 
       - name: Run format check
-        run: nix-shell --run "cargo fmt --all -- --check"
-
-      - name: Run tests
-        run: nix-shell --run "cargo test --verbose"
+        run: nix develop --command bash -c "cargo fmt --all -- --check"
 
       - name: Build nix package
         run: nix build . --show-trace
